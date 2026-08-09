@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Galaxy Computer — Biaya Proyek</title>
+<style>
+  :root{
+    --paper:#fbfaf7;
+    --ink:#1a1a1a;
+    --ink-soft:#5c5c5c;
+    --blue:#1f6fb2;
+    --blue-deep:#124a78;
+    --accent-bg:#eef4f9;
+    --danger:#b23b3b;
+    --danger-bg:#fdeaea;
+    --warn:#a9700f;
+    --warn-bg:#fdf3e0;
+    --green:#1f7a4d;
+    --radius:10px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#e9e7e1;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    padding-bottom:40px;
+  }
+  .topbar{
+    background:var(--blue-deep);
+    color:#fff;
+    padding:16px 18px 14px;
+    position:sticky; top:0; z-index:20;
+  }
+  .topbar h1{font-size:17px; margin:0; font-weight:700;}
+  .topbar p{margin:2px 0 0; font-size:12px; color:#cfe0ee;}
+  .proj-current{
+    margin-top:10px; background:rgba(255,255,255,.12); border-radius:8px; padding:9px 11px;
+    font-size:13px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .proj-current .name{font-weight:700;}
+  .proj-current .switch{font-size:11.5px; text-decoration:underline; cursor:pointer; color:#cfe0ee;}
+  .tabs{display:flex; gap:6px; margin-top:10px; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .tab{
+    flex:0 0 auto; min-width:64px; text-align:center; padding:9px 8px; border-radius:8px;
+    font-size:12px; font-weight:600; background:rgba(255,255,255,.12); color:#e7eef5;
+    border:none; cursor:pointer; white-space:nowrap;
+  }
+  .tab.active{background:#fff; color:var(--blue-deep);}
+
+  .wrap{max-width:560px; margin:0 auto; padding:14px;}
+  .card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
+    border:1px solid #e2ded3;
+  }
+  .field{margin-bottom:12px;}
+  .field label{
+    display:block; font-size:11.5px; font-weight:700; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;
+  }
+  input[type=text], input[type=number], input[type=date], select{
+    width:100%; padding:10px 11px; border:1px solid #d6d1c4; border-radius:8px;
+    font-size:15px; background:#fff; color:var(--ink); font-family:inherit;
+  }
+  input:focus, select:focus{outline:2px solid var(--blue); outline-offset:1px;}
+
+  .btn-primary{
+    width:100%; padding:14px; border-radius:9px; border:none;
+    background:var(--blue-deep); color:#fff; font-size:15.5px; font-weight:700;
+    cursor:pointer; margin-top:4px;
+  }
+  .btn-secondary{
+    width:100%; padding:12px; border-radius:9px; border:1px solid #c9c3b4;
+    background:#fff; color:var(--ink); font-size:14px; font-weight:600; cursor:pointer;
+    margin-top:8px;
+  }
+
+  .alert{
+    border-radius:10px; padding:13px 14px; margin-bottom:14px; font-size:13.5px;
+    display:flex; gap:10px; align-items:flex-start; line-height:1.4;
+  }
+  .alert.over{background:var(--danger-bg); color:var(--danger); border:1px solid #eeccc9;}
+  .alert.near{background:var(--warn-bg); color:var(--warn); border:1px solid #f3e0b5;}
+  .alert .ic{font-size:18px; flex-shrink:0;}
+  .alert b{display:block; font-size:14px; margin-bottom:2px;}
+
+  .chip-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:2px;}
+  .chip{
+    padding:7px 12px; border-radius:16px; font-size:12.5px; font-weight:600;
+    background:#fff; border:1px solid #d6d1c4; color:var(--ink-soft); cursor:pointer;
+  }
+  .chip.active{background:var(--blue-deep); color:#fff; border-color:var(--blue-deep);}
+
+  /* Proyek list */
+  .proj-item{
+    background:#fff; border:1px solid #e2ded3; border-radius:10px; padding:13px 14px; margin-bottom:10px;
+    cursor:pointer;
+  }
+  .proj-item.selected{border-color:var(--blue-deep); box-shadow:0 0 0 1.5px var(--blue-deep);}
+  .proj-item .top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .proj-item .pname{font-weight:700; font-size:15px;}
+  .proj-item .ploc{font-size:12px; color:var(--ink-soft); margin-top:1px;}
+  .proj-item .top-right{display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .proj-del{
+    background:#fdeaea; border:1px solid #eeccc9; color:var(--danger); font-size:17px; line-height:1;
+    cursor:pointer; padding:0; width:34px; height:34px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .proj-item .status{
+    font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;
+    background:var(--accent-bg); color:var(--blue-deep); text-transform:uppercase;
+  }
+  .proj-item .status.selesai{background:#e7f3ec; color:var(--green);}
+  .proj-item .budgetline{margin-top:9px;}
+  .proj-item .budgetline .nums{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft); margin-bottom:4px;}
+  .mini-bar{height:6px; border-radius:4px; background:#e5e1d4; overflow:hidden;}
+  .mini-bar .fill{height:100%; border-radius:4px;}
+
+  /* history */
+  .day-group{margin-bottom:16px;}
+  .day-header{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:12.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase;
+    letter-spacing:.3px; padding:0 2px 6px; border-bottom:1px solid #e2ded3; margin-bottom:6px;
+  }
+  .day-header .tot{color:var(--blue-deep); font-size:13px;}
+  .expense-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 2px; border-bottom:1px solid #ece8dd;
+  }
+  .expense-item:last-child{border-bottom:none;}
+  .expense-item .cat{
+    font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--blue-deep);
+    background:var(--accent-bg); padding:2px 7px; border-radius:5px; display:inline-block; margin-bottom:3px;
+  }
+  .expense-item .desc{font-size:14px; font-weight:600;}
+  .expense-item .worker{font-size:11.5px; color:var(--ink-soft); margin-top:1px;}
+  .expense-item .amt{font-weight:800; font-size:14.5px;}
+  .expense-item .del{background:none; border:none; color:var(--danger); font-size:19px; padding:0 0 0 10px; cursor:pointer;}
+  .expense-row-inner{flex:1; display:flex; justify-content:space-between; align-items:center;}
+
+  .filter-row{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:10px;}
+  .filter-chip{
+    white-space:nowrap; padding:6px 12px; border-radius:14px; font-size:12px; font-weight:600;
+    background:#fff; border:1px solid #d6d1c4; color:var(--ink-soft); cursor:pointer; flex-shrink:0;
+  }
+  .filter-chip.active{background:var(--blue-deep); color:#fff; border-color:var(--blue-deep);}
+
+  .empty{text-align:center; color:var(--ink-soft); font-size:13.5px; padding:30px 10px;}
+
+  .stat-big{text-align:center; padding:6px 0 14px;}
+  .stat-big .num{font-size:26px; font-weight:800; color:var(--blue-deep);}
+  .stat-big .cap{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .cat-bar-row{margin-bottom:12px;}
+  .cat-bar-row .top{display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;}
+  .cat-bar-row .top .name{font-weight:600;}
+  .cat-bar-row .top .val{color:var(--ink-soft);}
+  .cat-bar-track{height:8px; border-radius:5px; background:#e5e1d4; overflow:hidden;}
+  .cat-bar-fill{height:100%; border-radius:5px; background:var(--blue);}
+
+  .section-label{
+    font-size:11.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase;
+    letter-spacing:.5px; margin:4px 0 8px;
+  }
+  .worker-tag{
+    display:inline-flex; align-items:center; gap:5px; padding:6px 10px 6px 12px; border-radius:14px;
+    background:#fff; border:1px solid #d6d1c4; font-size:12.5px; margin:0 6px 6px 0;
+  }
+  .worker-tag button{background:none; border:none; color:var(--danger); font-size:15px; cursor:pointer; padding:0;}
+
+  /* Barang belanja */
+  .item-summary{display:flex; gap:8px; margin-bottom:14px;}
+  .item-summary .box{
+    flex:1; background:var(--paper); border:1px solid #e2ded3; border-radius:10px; padding:11px 10px; text-align:center;
+  }
+  .item-summary .box .n{font-size:15px; font-weight:800;}
+  .item-summary .box .l{font-size:10px; color:var(--ink-soft); text-transform:uppercase; margin-top:2px; font-weight:700;}
+  .item-summary .box.sisa .n{color:var(--danger);}
+  .item-summary .box.beli .n{color:var(--green);}
+  .item-row3{display:grid; grid-template-columns:1fr 60px 70px; gap:6px;}
+  .item-list-row{
+    display:flex; align-items:flex-start; gap:10px; padding:11px 2px; border-bottom:1px solid #ece8dd;
+  }
+  .item-list-row:last-child{border-bottom:none;}
+  .item-check{
+    width:22px; height:22px; border-radius:6px; border:2px solid #c9c3b4; flex-shrink:0; margin-top:1px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; background:#fff; font-size:14px; color:#fff;
+  }
+  .item-check.checked{background:var(--green); border-color:var(--green);}
+  .item-info{flex:1;}
+  .item-info .nm{font-size:14px; font-weight:600;}
+  .item-info .nm.done{text-decoration:line-through; color:var(--ink-soft);}
+  .item-info .meta{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .item-info .jml{font-weight:700; font-size:13.5px; margin-top:2px;}
+  .item-del{background:none; border:none; color:var(--danger); font-size:19px; cursor:pointer; padding:0 0 0 4px;}
+  .sub-section-title{font-size:12.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.4px; margin:14px 0 8px;}
+
+  .hidden{display:none !important;}
+  .toast{
+    position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+    background:var(--ink); color:#fff; padding:10px 18px; border-radius:20px;
+    font-size:13px; z-index:100; box-shadow:0 3px 10px rgba(0,0,0,.25);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Galaxy Computer</h1>
+  <p>Biaya Proyek CCTV &amp; Jaringan</p>
+  <div class="proj-current" id="projCurrentBar">
+    <div><div class="name" id="projCurrentName">Belum ada proyek</div></div>
+    <div class="switch" data-tab="proyek">Ganti Proyek</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="proyek">Proyek</button>
+    <button class="tab" data-tab="barang">Barang</button>
+    <button class="tab" data-tab="catat">Catat</button>
+    <button class="tab" data-tab="riwayat">Riwayat</button>
+    <button class="tab" data-tab="rekap">Rekap</button>
+    <button class="tab" data-tab="atur">Atur</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- TAB: PROYEK -->
+  <div id="tab-proyek">
+    <div class="card">
+      <div class="field">
+        <label>Nama Proyek</label>
+        <input type="text" id="newProjName" placeholder="Contoh: CCTV Casatuya Resort">
+      </div>
+      <div class="field">
+        <label>Lokasi</label>
+        <input type="text" id="newProjLoc" placeholder="Contoh: Taro, Bali">
+      </div>
+      <div class="field">
+        <label>Anggaran Proyek (Rp) — opsional</label>
+        <input type="number" id="newProjBudget" placeholder="0" min="0">
+      </div>
+      <button class="btn-primary" id="addProjBtn">+ Buat Proyek Baru</button>
+    </div>
+    <div id="projList"></div>
+  </div>
+
+  <!-- TAB: BARANG -->
+  <div id="tab-barang" class="hidden">
+    <div class="card" id="noProjCardBarang">
+      <div class="empty">Buat atau pilih proyek dulu di tab "Proyek".</div>
+    </div>
+    <div id="barangContent" class="hidden">
+      <div class="item-summary">
+        <div class="box"><div class="n" id="sumTotalEstimasi">Rp 0</div><div class="l">Total Estimasi</div></div>
+        <div class="box sisa"><div class="n" id="sumSisa">Rp 0</div><div class="l">Belum Dibeli</div></div>
+        <div class="box beli"><div class="n" id="sumSudah">Rp 0</div><div class="l">Sudah Dibeli</div></div>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>Nama Barang</label>
+          <input type="text" id="inpItemName" placeholder="Contoh: NVR Hilook 16 Channel">
+        </div>
+        <div class="item-row3">
+          <div class="field">
+            <label>Harga Satuan</label>
+            <input type="number" id="inpItemHarga" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Qty</label>
+            <input type="number" id="inpItemQty" placeholder="1" min="0" value="1">
+          </div>
+          <div class="field">
+            <label>Satuan</label>
+            <input type="text" id="inpItemSatuan" placeholder="unit">
+          </div>
+        </div>
+        <button class="btn-primary" id="addItemBtnBarang">+ Tambah ke Daftar Barang</button>
+      </div>
+      <div class="card">
+        <div class="sub-section-title" style="margin-top:0;">Belum Dibeli</div>
+        <div id="itemListPending"></div>
+        <div class="sub-section-title">Sudah Dibeli</div>
+        <div id="itemListDone"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: CATAT -->
+  <div id="tab-catat" class="hidden">
+    <div id="catatAlertBox"></div>
+    <div class="card" id="noProjCard">
+      <div class="empty">Buat atau pilih proyek dulu di tab "Proyek".</div>
+    </div>
+    <div id="catatForm" class="hidden">
+      <div class="card">
+        <div class="field">
+          <label>Tanggal</label>
+          <input type="date" id="inpDate">
+        </div>
+        <div class="field">
+          <label>Kategori</label>
+          <div class="chip-row" id="catChips"></div>
+        </div>
+        <div class="field hidden" id="workerFieldWrap">
+          <label>Nama Tukang / Pekerja</label>
+          <input type="text" id="inpWorker" placeholder="Nama pekerja">
+        </div>
+        <div class="field">
+          <label>Keterangan</label>
+          <input type="text" id="inpDesc" placeholder="Contoh: Bensin motor, makan siang tim, dll">
+        </div>
+        <div class="field">
+          <label>Jumlah (Rp)</label>
+          <input type="number" id="inpAmount" placeholder="0" min="0">
+        </div>
+        <button class="btn-primary" id="addExpBtn">+ Simpan Pengeluaran</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: RIWAYAT -->
+  <div id="tab-riwayat" class="hidden">
+    <div class="card">
+      <button class="btn-secondary" id="exportBtn" style="margin-top:0;">⬇ Download Laporan Proyek Ini (CSV)</button>
+    </div>
+    <div class="filter-row" id="filterCatRow"></div>
+    <div id="historyContainer"></div>
+  </div>
+
+  <!-- TAB: REKAP -->
+  <div id="tab-rekap" class="hidden">
+    <div class="card">
+      <div class="stat-big">
+        <div class="num" id="rekapTotal">Rp 0</div>
+        <div class="cap" id="rekapCap">Total pengeluaran proyek</div>
+      </div>
+      <div id="budgetAlertRekap"></div>
+      <div id="rekapByCat"></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Ongkos Tukang per Pekerja</div>
+      <div id="rekapByWorker"><div class="empty">Belum ada data.</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: ATUR -->
+  <div id="tab-atur" class="hidden">
+    <div class="card">
+      <div class="section-label">Kategori Pengeluaran</div>
+      <div class="chip-row" id="manageCatChips" style="margin-bottom:10px;"></div>
+      <input type="text" id="newCatInput" placeholder="Nama kategori baru" style="margin-bottom:8px;">
+      <button class="btn-secondary" id="addCatBtn" style="margin-top:0;">+ Tambah Kategori</button>
+    </div>
+    <div class="card">
+      <div class="section-label">Daftar Tukang / Pekerja Langganan</div>
+      <div id="workerTagsWrap" style="margin-bottom:10px;"></div>
+      <input type="text" id="newWorkerInput" placeholder="Nama pekerja baru" style="margin-bottom:8px;">
+      <button class="btn-secondary" id="addWorkerBtn" style="margin-top:0;">+ Tambah Pekerja</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const DEFAULT_CATS = ["Transport","Makan","Ongkos Tukang","Material","Akomodasi","Pulsa/Komunikasi","Lain-lain"];
+const DEFAULT_SETTINGS = { cats: DEFAULT_CATS, workers: [], currentProjectId: null, warnPercent: 80 };
+
+let settings = {...DEFAULT_SETTINGS};
+let projects = []; // {id, name, loc, budget, status, createdAt}
+let expenses = [];  // {id, projectId, date, cat, worker, desc, amount, createdAt}
+let items = []; // {id, projectId, nama, harga, qty, satuan, purchased, purchasedAt}
+let selectedCat = DEFAULT_CATS[0];
+let historyFilterCat = 'Semua';
+
+function rupiah(n){ return "Rp " + Math.round(n).toLocaleString('id-ID'); }
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function fmtDateLabel(dstr){
+  const [y,m,d] = dstr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  const hariNames = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const bulanNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  return `${hariNames[dt.getDay()]}, ${d} ${bulanNames[m-1]} ${y}`;
+}
+function uid(prefix){ return prefix+Date.now()+Math.floor(Math.random()*1000); }
+
+// ---------- Storage ----------
+function lsGet(key, fallback){
+  try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
+}
+function lsSet(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
+function loadAll(){
+  settings = {...DEFAULT_SETTINGS, ...lsGet('settings', {})};
+  if(!settings.cats || settings.cats.length===0) settings.cats = DEFAULT_CATS;
+  if(!settings.workers) settings.workers = [];
+  projects = lsGet('projects', []);
+  expenses = lsGet('expenses', []);
+  items = lsGet('items', []);
+  if(!settings.cats.includes(selectedCat)) selectedCat = settings.cats[0];
+}
+function saveSettings(){ lsSet('settings', settings); }
+function saveProjects(){ lsSet('projects', projects); }
+function saveExpenses(){ lsSet('expenses', expenses); }
+function saveItems(){ lsSet('items', items); }
+function getProjectItems(pid){ return items.filter(i=>i.projectId===pid); }
+
+function getCurrentProject(){
+  return projects.find(p=>p.id===settings.currentProjectId) || null;
+}
+function getProjectExpenses(pid){
+  return expenses.filter(e=>e.projectId===pid);
+}
+function getProjectTotal(pid){
+  return getProjectExpenses(pid).reduce((s,e)=>s+e.amount,0);
+}
+
+// ---------- Tabs ----------
+document.querySelectorAll('.tab, .switch').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const target = btn.dataset.tab;
+    if(!target) return;
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    const tabBtn = document.querySelector(`.tab[data-tab="${target}"]`);
+    if(tabBtn) tabBtn.classList.add('active');
+    ['proyek','barang','catat','riwayat','rekap','atur'].forEach(t=>{
+      document.getElementById('tab-'+t).classList.toggle('hidden', t!==target);
+    });
+    if(target==='proyek') renderProjectList();
+    if(target==='barang') renderBarangTab();
+    if(target==='catat') renderCatatTab();
+    if(target==='riwayat') { renderFilterChips(); renderHistory(); }
+    if(target==='rekap') renderRekap();
+    if(target==='atur') renderAturTab();
+  });
+});
+
+// ---------- Header current project ----------
+function renderHeaderProject(){
+  const p = getCurrentProject();
+  document.getElementById('projCurrentName').textContent = p ? p.name : 'Belum ada proyek';
+}
+
+// ---------- Proyek tab ----------
+document.getElementById('addProjBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('newProjName').value.trim();
+  const loc = document.getElementById('newProjLoc').value.trim();
+  const budget = parseFloat(document.getElementById('newProjBudget').value) || 0;
+  if(!name){ showToast('Isi nama proyek dulu'); return; }
+  const proj = { id: uid('p'), name, loc, budget, status:'Berjalan', createdAt: new Date().toISOString() };
+  projects.push(proj);
+  saveProjects();
+  settings.currentProjectId = proj.id;
+  saveSettings();
+  document.getElementById('newProjName').value='';
+  document.getElementById('newProjLoc').value='';
+  document.getElementById('newProjBudget').value='';
+  renderProjectList();
+  renderHeaderProject();
+  showToast('Proyek dibuat & dipilih');
+  // arahkan ke tab Barang supaya bisa langsung isi daftar barang yang perlu dibeli
+  document.querySelector('.tab[data-tab="barang"]').click();
+});
+
+function renderProjectList(){
+  const el = document.getElementById('projList');
+  if(projects.length===0){
+    el.innerHTML = '<div class="card"><div class="empty">Belum ada proyek. Buat proyek pertama di atas.</div></div>';
+    return;
+  }
+  el.innerHTML = '';
+  [...projects].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')).forEach(p=>{
+    const total = getProjectTotal(p.id);
+    const pct = p.budget>0 ? Math.min(100, (total/p.budget)*100) : 0;
+    const over = p.budget>0 && total>p.budget;
+    const div = document.createElement('div');
+    div.className = 'proj-item' + (p.id===settings.currentProjectId ? ' selected' : '');
+    div.innerHTML = `
+      <div class="top">
+        <div>
+          <div class="pname">${p.name}</div>
+          <div class="ploc">${p.loc || '—'}</div>
+        </div>
+        <span class="status ${p.status==='Selesai' ? 'selesai' : ''}" data-toggle-status="${p.id}">${p.status}</span>
+        <div class="top-right">
+          <button class="proj-del" data-delproj="${p.id}" title="Hapus proyek">🗑</button>
+        </div>
+      </div>
+      <div class="budgetline">
+        <div class="nums">
+          <span>${rupiah(total)} terpakai</span>
+          <span>${p.budget>0 ? 'Anggaran '+rupiah(p.budget) : 'Tanpa anggaran'}</span>
+        </div>
+        ${p.budget>0 ? `<div class="mini-bar"><div class="fill" style="width:${pct}%; background:${over ? 'var(--danger)' : (pct>=(settings.warnPercent||80) ? 'var(--warn)' : 'var(--blue)')};"></div></div>` : ''}
+      </div>
+    `;
+    div.addEventListener('click', (e)=>{
+      if(e.target.closest('[data-toggle-status],[data-delproj]')) return;
+      settings.currentProjectId = p.id;
+      saveSettings();
+      renderProjectList();
+      renderHeaderProject();
+      showToast('Proyek "'+p.name+'" dipilih');
+    });
+    el.appendChild(div);
+  });
+  el.querySelectorAll('[data-toggle-status]').forEach(s=>{
+    s.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const proj = projects.find(x=>x.id===s.dataset.toggleStatus);
+      proj.status = proj.status==='Selesai' ? 'Berjalan' : 'Selesai';
+      saveProjects();
+      renderProjectList();
+    });
+  });
+  el.querySelectorAll('[data-delproj]').forEach(s=>{
+    s.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const proj = projects.find(x=>x.id===s.dataset.delproj);
+      if(!confirm(`Hapus proyek "${proj.name}"?\n\nSemua daftar barang dan riwayat pengeluaran di proyek ini akan ikut terhapus dan TIDAK BISA dikembalikan.`)) return;
+      projects = projects.filter(x=>x.id!==proj.id);
+      items = items.filter(i=>i.projectId!==proj.id);
+      expenses = expenses.filter(e2=>e2.projectId!==proj.id);
+      saveProjects(); saveItems(); saveExpenses();
+      if(settings.currentProjectId===proj.id){
+        settings.currentProjectId = projects.length>0 ? projects[0].id : null;
+        saveSettings();
+      }
+      renderProjectList();
+      renderHeaderProject();
+      showToast('Proyek dihapus');
+    });
+  });
+}
+
+// ---------- Barang tab ----------
+function renderBarangTab(){
+  const p = getCurrentProject();
+  document.getElementById('noProjCardBarang').classList.toggle('hidden', !!p);
+  document.getElementById('barangContent').classList.toggle('hidden', !p);
+  if(p) renderItemLists();
+}
+document.getElementById('addItemBtnBarang').addEventListener('click', ()=>{
+  const p = getCurrentProject();
+  if(!p){ showToast('Pilih proyek dulu'); return; }
+  const nama = document.getElementById('inpItemName').value.trim();
+  const harga = parseFloat(document.getElementById('inpItemHarga').value) || 0;
+  const qty = parseFloat(document.getElementById('inpItemQty').value) || 1;
+  const satuan = document.getElementById('inpItemSatuan').value.trim() || 'unit';
+  if(!nama){ showToast('Isi nama barang dulu'); return; }
+  if(harga<=0){ showToast('Isi harga satuan'); return; }
+
+  items.push({
+    id: uid('it'), projectId: p.id, nama, harga, qty, satuan,
+    purchased:false, purchasedAt:null, createdAt: new Date().toISOString()
+  });
+  saveItems();
+  document.getElementById('inpItemName').value = '';
+  document.getElementById('inpItemHarga').value = '';
+  document.getElementById('inpItemQty').value = '1';
+  document.getElementById('inpItemSatuan').value = '';
+  renderItemLists();
+  showToast('Barang ditambahkan ke daftar');
+});
+function renderItemLists(){
+  const p = getCurrentProject();
+  const list = getProjectItems(p.id);
+  const pending = list.filter(i=>!i.purchased).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||''));
+  const done = list.filter(i=>i.purchased).sort((a,b)=>(b.purchasedAt||'').localeCompare(a.purchasedAt||''));
+
+  const totalEstimasi = list.reduce((s,i)=>s+i.harga*i.qty,0);
+  const totalSisa = pending.reduce((s,i)=>s+i.harga*i.qty,0);
+  const totalSudah = done.reduce((s,i)=>s+i.harga*i.qty,0);
+  document.getElementById('sumTotalEstimasi').textContent = rupiah(totalEstimasi);
+  document.getElementById('sumSisa').textContent = rupiah(totalSisa);
+  document.getElementById('sumSudah').textContent = rupiah(totalSudah);
+
+  const pendingEl = document.getElementById('itemListPending');
+  pendingEl.innerHTML = pending.length===0
+    ? '<div class="empty">Semua barang sudah dibeli 🎉</div>'
+    : pending.map(i=>itemRowHtml(i)).join('');
+
+  const doneEl = document.getElementById('itemListDone');
+  doneEl.innerHTML = done.length===0
+    ? '<div class="empty">Belum ada barang yang dibeli.</div>'
+    : done.map(i=>itemRowHtml(i)).join('');
+
+  document.querySelectorAll('[data-check]').forEach(b=>{
+    b.addEventListener('click', ()=>toggleItemPurchased(b.dataset.check));
+  });
+  document.querySelectorAll('[data-delitem]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(!confirm('Hapus barang ini dari daftar?')) return;
+      items = items.filter(i=>i.id!==b.dataset.delitem);
+      saveItems();
+      renderItemLists();
+    });
+  });
+}
+function itemRowHtml(i){
+  const jumlah = i.harga * i.qty;
+  return `
+    <div class="item-list-row">
+      <div class="item-check ${i.purchased?'checked':''}" data-check="${i.id}">${i.purchased?'✓':''}</div>
+      <div class="item-info">
+        <div class="nm ${i.purchased?'done':''}">${i.nama}</div>
+        <div class="meta">${i.qty} ${i.satuan} × ${rupiah(i.harga)}</div>
+        <div class="jml">${rupiah(jumlah)}</div>
+      </div>
+      <button class="item-del" data-delitem="${i.id}">×</button>
+    </div>`;
+}
+function toggleItemPurchased(id){
+  const item = items.find(i=>i.id===id);
+  if(!item) return;
+  if(!item.purchased){
+    item.purchased = true;
+    item.purchasedAt = new Date().toISOString();
+    saveItems();
+    renderItemLists();
+    const jumlah = item.harga * item.qty;
+    if(confirm(`Tandai "${item.nama}" sudah dibeli.\n\nCatat juga sebagai pengeluaran kategori Material sebesar ${rupiah(jumlah)}?`)){
+      const p = getCurrentProject();
+      expenses.push({
+        id: uid('e'), projectId: p.id, date: todayStr(), cat: 'Material',
+        worker:'', desc: item.nama, amount: jumlah, createdAt: new Date().toISOString()
+      });
+      saveExpenses();
+      showToast('Dicatat sebagai pengeluaran');
+    }
+  }else{
+    item.purchased = false;
+    item.purchasedAt = null;
+    saveItems();
+    renderItemLists();
+  }
+}
+
+// ---------- Catat tab ----------
+function renderCatChips(){
+  const c = document.getElementById('catChips');
+  c.innerHTML = '';
+  settings.cats.forEach(cat=>{
+    const chip = document.createElement('button');
+    chip.type='button';
+    chip.className = 'chip' + (cat===selectedCat ? ' active' : '');
+    chip.textContent = cat;
+    chip.addEventListener('click', ()=>{
+      selectedCat = cat;
+      renderCatChips();
+      document.getElementById('workerFieldWrap').classList.toggle('hidden', cat!=='Ongkos Tukang');
+    });
+    c.appendChild(chip);
+  });
+  document.getElementById('workerFieldWrap').classList.toggle('hidden', selectedCat!=='Ongkos Tukang');
+}
+function renderCatatAlert(){
+  const box = document.getElementById('catatAlertBox');
+  const p = getCurrentProject();
+  box.innerHTML = '';
+  if(!p || !p.budget || p.budget<=0) return;
+  const total = getProjectTotal(p.id);
+  if(total > p.budget){
+    box.innerHTML = `<div class="alert over"><div class="ic">⚠️</div><div><b>Anggaran proyek "${p.name}" sudah terlampaui!</b>Terpakai ${rupiah(total)} dari anggaran ${rupiah(p.budget)}.</div></div>`;
+  }else if(total >= p.budget*((settings.warnPercent||80)/100)){
+    box.innerHTML = `<div class="alert near"><div class="ic">🔔</div><div><b>Anggaran hampir habis</b>Sisa anggaran: ${rupiah(p.budget-total)}.</div></div>`;
+  }
+}
+function renderCatatTab(){
+  const p = getCurrentProject();
+  document.getElementById('noProjCard').classList.toggle('hidden', !!p);
+  document.getElementById('catatForm').classList.toggle('hidden', !p);
+  if(p){
+    document.getElementById('inpDate').value = todayStr();
+    renderCatChips();
+    renderCatatAlert();
+  }
+}
+document.getElementById('addExpBtn').addEventListener('click', ()=>{
+  const p = getCurrentProject();
+  if(!p){ showToast('Pilih proyek dulu'); return; }
+  const date = document.getElementById('inpDate').value || todayStr();
+  const worker = selectedCat==='Ongkos Tukang' ? document.getElementById('inpWorker').value.trim() : '';
+  const desc = document.getElementById('inpDesc').value.trim();
+  const amount = parseFloat(document.getElementById('inpAmount').value) || 0;
+  if(!desc){ showToast('Isi keterangan dulu'); return; }
+  if(amount<=0){ showToast('Isi jumlah pengeluaran'); return; }
+
+  expenses.push({
+    id: uid('e'), projectId: p.id, date, cat: selectedCat, worker, desc, amount,
+    createdAt: new Date().toISOString()
+  });
+  saveExpenses();
+  if(worker && !settings.workers.includes(worker)){
+    settings.workers.push(worker);
+    saveSettings();
+  }
+  document.getElementById('inpDesc').value = '';
+  document.getElementById('inpAmount').value = '';
+  document.getElementById('inpWorker').value = '';
+  renderCatatAlert();
+  showToast('Pengeluaran tersimpan');
+});
+
+// ---------- Riwayat tab ----------
+function renderFilterChips(){
+  const el = document.getElementById('filterCatRow');
+  const cats = ['Semua', ...settings.cats];
+  el.innerHTML = '';
+  cats.forEach(c=>{
+    const chip = document.createElement('button');
+    chip.className = 'filter-chip' + (c===historyFilterCat ? ' active' : '');
+    chip.textContent = c;
+    chip.addEventListener('click', ()=>{ historyFilterCat = c; renderFilterChips(); renderHistory(); });
+    el.appendChild(chip);
+  });
+}
+function renderHistory(){
+  const el = document.getElementById('historyContainer');
+  const p = getCurrentProject();
+  if(!p){ el.innerHTML = '<div class="card"><div class="empty">Pilih proyek dulu di tab "Proyek".</div></div>'; return; }
+  let list = getProjectExpenses(p.id);
+  if(historyFilterCat!=='Semua') list = list.filter(e=>e.cat===historyFilterCat);
+  if(list.length===0){
+    el.innerHTML = '<div class="card"><div class="empty">Belum ada catatan untuk proyek ini.</div></div>';
+    return;
+  }
+  const byDate = {};
+  list.forEach(e=>{ if(!byDate[e.date]) byDate[e.date]=[]; byDate[e.date].push(e); });
+  const dates = Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
+  el.innerHTML = '';
+  dates.forEach(d=>{
+    const items = byDate[d].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+    const total = items.reduce((s,e)=>s+e.amount,0);
+    const group = document.createElement('div');
+    group.className = 'card day-group';
+    let html = `<div class="day-header"><span>${fmtDateLabel(d)}</span><span class="tot">${rupiah(total)}</span></div>`;
+    items.forEach(e=>{
+      html += `
+        <div class="expense-item">
+          <div class="expense-row-inner">
+            <div>
+              <span class="cat">${e.cat}</span>
+              <div class="desc">${e.desc}</div>
+              ${e.worker ? `<div class="worker">Pekerja: ${e.worker}</div>` : ''}
+            </div>
+            <div class="amt">${rupiah(e.amount)}</div>
+          </div>
+          <button class="del" data-del="${e.id}">×</button>
+        </div>`;
+    });
+    group.innerHTML = html;
+    el.appendChild(group);
+  });
+  el.querySelectorAll('[data-del]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(!confirm('Hapus catatan ini?')) return;
+      expenses = expenses.filter(e=>e.id!==b.dataset.del);
+      saveExpenses();
+      renderHistory();
+      showToast('Dihapus');
+    });
+  });
+}
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const p = getCurrentProject();
+  if(!p){ showToast('Pilih proyek dulu'); return; }
+  const list = getProjectExpenses(p.id);
+  if(list.length===0){ showToast('Belum ada data untuk diexport'); return; }
+  let csv = 'Proyek,Tanggal,Kategori,Pekerja,Keterangan,Jumlah\n';
+  [...list].sort((a,b)=>a.date.localeCompare(b.date)).forEach(e=>{
+    csv += [`"${p.name}"`, e.date, `"${e.cat}"`, `"${e.worker||''}"`, `"${e.desc.replace(/"/g,'""')}"`, e.amount].join(',') + '\n';
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `biaya-${p.name.replace(/[^a-z0-9]+/gi,'-')}-${todayStr()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Laporan CSV diunduh');
+});
+
+// ---------- Rekap tab ----------
+function renderRekap(){
+  const p = getCurrentProject();
+  const totalEl = document.getElementById('rekapTotal');
+  const capEl = document.getElementById('rekapCap');
+  const alertEl = document.getElementById('budgetAlertRekap');
+  const catEl = document.getElementById('rekapByCat');
+  const workerEl = document.getElementById('rekapByWorker');
+  if(!p){
+    totalEl.textContent = 'Rp 0';
+    capEl.textContent = 'Pilih proyek dulu';
+    alertEl.innerHTML = '';
+    catEl.innerHTML = '';
+    workerEl.innerHTML = '<div class="empty">Belum ada data.</div>';
+    return;
+  }
+  const list = getProjectExpenses(p.id);
+  const total = list.reduce((s,e)=>s+e.amount,0);
+  totalEl.textContent = rupiah(total);
+  capEl.textContent = `Total pengeluaran — ${p.name}`;
+
+  alertEl.innerHTML = '';
+  if(p.budget>0){
+    if(total>p.budget){
+      alertEl.innerHTML = `<div class="alert over"><div class="ic">⚠️</div><div><b>Melebihi anggaran</b>Lebih ${rupiah(total-p.budget)} dari anggaran ${rupiah(p.budget)}.</div></div>`;
+    }else if(total >= p.budget*((settings.warnPercent||80)/100)){
+      alertEl.innerHTML = `<div class="alert near"><div class="ic">🔔</div><div><b>Mendekati anggaran</b>Sisa ${rupiah(p.budget-total)} dari ${rupiah(p.budget)}.</div></div>`;
+    }
+  }
+
+  const byCat = {};
+  list.forEach(e=>{ byCat[e.cat] = (byCat[e.cat]||0)+e.amount; });
+  const catEntries = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+  if(catEntries.length===0){
+    catEl.innerHTML = '<div class="empty">Belum ada data.</div>';
+  }else{
+    const max = catEntries[0][1];
+    catEl.innerHTML = catEntries.map(([cat,val])=>{
+      const pct = max>0 ? (val/max*100) : 0;
+      return `<div class="cat-bar-row">
+        <div class="top"><span class="name">${cat}</span><span class="val">${rupiah(val)}</span></div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%;"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  const byWorker = {};
+  list.filter(e=>e.cat==='Ongkos Tukang' && e.worker).forEach(e=>{
+    byWorker[e.worker] = (byWorker[e.worker]||0)+e.amount;
+  });
+  const workerEntries = Object.entries(byWorker).sort((a,b)=>b[1]-a[1]);
+  if(workerEntries.length===0){
+    workerEl.innerHTML = '<div class="empty">Belum ada ongkos tukang tercatat.</div>';
+  }else{
+    workerEl.innerHTML = workerEntries.map(([w,val])=>`
+      <div class="expense-item"><div class="desc">${w}</div><div class="amt">${rupiah(val)}</div></div>
+    `).join('');
+  }
+}
+
+// ---------- Atur tab ----------
+function renderAturTab(){
+  renderManageCats();
+  renderWorkerTags();
+}
+function renderManageCats(){
+  const c = document.getElementById('manageCatChips');
+  c.innerHTML = '';
+  settings.cats.forEach(cat=>{
+    const chip = document.createElement('button');
+    chip.type='button';
+    chip.className = 'chip';
+    chip.innerHTML = cat + ' &times;';
+    chip.addEventListener('click', ()=>{
+      if(settings.cats.length<=1){ showToast('Minimal harus ada 1 kategori'); return; }
+      if(!confirm(`Hapus kategori "${cat}"?`)) return;
+      settings.cats = settings.cats.filter(x=>x!==cat);
+      saveSettings();
+      renderManageCats();
+    });
+    c.appendChild(chip);
+  });
+}
+document.getElementById('addCatBtn').addEventListener('click', ()=>{
+  const val = document.getElementById('newCatInput').value.trim();
+  if(!val){ showToast('Isi nama kategori'); return; }
+  if(settings.cats.includes(val)){ showToast('Kategori sudah ada'); return; }
+  settings.cats.push(val);
+  saveSettings();
+  document.getElementById('newCatInput').value = '';
+  renderManageCats();
+  showToast('Kategori ditambahkan');
+});
+function renderWorkerTags(){
+  const c = document.getElementById('workerTagsWrap');
+  if(!settings.workers || settings.workers.length===0){
+    c.innerHTML = '<div class="empty" style="padding:8px 0;">Belum ada pekerja tersimpan.</div>';
+    return;
+  }
+  c.innerHTML = settings.workers.map(w=>`<span class="worker-tag">${w}<button data-delw="${w}">×</button></span>`).join('');
+  c.querySelectorAll('[data-delw]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      settings.workers = settings.workers.filter(w=>w!==b.dataset.delw);
+      saveSettings();
+      renderWorkerTags();
+    });
+  });
+}
+document.getElementById('addWorkerBtn').addEventListener('click', ()=>{
+  const val = document.getElementById('newWorkerInput').value.trim();
+  if(!val){ showToast('Isi nama pekerja'); return; }
+  if(settings.workers.includes(val)){ showToast('Sudah ada di daftar'); return; }
+  settings.workers.push(val);
+  saveSettings();
+  document.getElementById('newWorkerInput').value = '';
+  renderWorkerTags();
+  showToast('Pekerja ditambahkan');
+});
+
+// ---------- Toast ----------
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2200);
+}
+
+// ---------- Init ----------
+(function init(){
+  loadAll();
+  renderHeaderProject();
+  renderProjectList();
+})();
+</script>
+
+</body>
+</html>
