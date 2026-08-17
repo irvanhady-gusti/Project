@@ -41,13 +41,15 @@
   }
   .proj-current .name{font-weight:700;}
   .proj-current .switch{font-size:11.5px; text-decoration:underline; cursor:pointer; color:#cfe0ee;}
-  .tabs{display:flex; gap:6px; margin-top:10px; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .tabs{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
   .tab{
-    flex:0 0 auto; min-width:64px; text-align:center; padding:9px 8px; border-radius:8px;
+    flex:1 1 auto; min-width:58px; text-align:center; padding:9px 8px; border-radius:8px;
     font-size:12px; font-weight:600; background:rgba(255,255,255,.12); color:#e7eef5;
     border:none; cursor:pointer; white-space:nowrap;
   }
   .tab.active{background:#fff; color:var(--blue-deep);}
+  .tab-backup{background:rgba(255,255,255,.28); color:#fff;}
+  .tab-backup.active{background:#fff; color:var(--blue-deep);}
 
   .wrap{max-width:560px; margin:0 auto; padding:14px;}
   .card{
@@ -200,6 +202,44 @@
   .item-del{background:none; border:none; color:var(--danger); font-size:19px; cursor:pointer; padding:0 0 0 4px;}
   .sub-section-title{font-size:12.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.4px; margin:14px 0 8px;}
 
+  /* Backup */
+  .bk-stats{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;}
+  .bk-stats .b{
+    background:#fff; border:1px solid #e2ded3; border-radius:9px; padding:10px; text-align:center;
+  }
+  .bk-stats .b .n{font-size:17px; font-weight:800; color:var(--blue-deep);}
+  .bk-stats .b .l{font-size:10px; color:var(--ink-soft); text-transform:uppercase; font-weight:700; margin-top:2px;}
+  .bk-note{
+    font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin-top:10px;
+    background:#f4f2ec; border-radius:8px; padding:10px 11px;
+  }
+  .bk-note b{color:var(--ink);}
+  .btn-green{
+    width:100%; padding:14px; border-radius:9px; border:none;
+    background:var(--green); color:#fff; font-size:15.5px; font-weight:700; cursor:pointer; margin-top:4px;
+  }
+  .btn-danger{
+    width:100%; padding:12px; border-radius:9px; border:1px solid #eeccc9;
+    background:var(--danger-bg); color:var(--danger); font-size:14px; font-weight:700; cursor:pointer; margin-top:8px;
+  }
+  textarea.bk-area{
+    width:100%; min-height:110px; padding:10px 11px; border:1px solid #d6d1c4; border-radius:8px;
+    font-size:12px; font-family:ui-monospace,Menlo,monospace; background:#fff; color:var(--ink);
+    resize:vertical; -webkit-user-select:text; user-select:text;
+  }
+  .bk-file{
+    display:block; width:100%; padding:12px; border-radius:9px; border:1px dashed #b9b3a3;
+    background:#fff; color:var(--blue-deep); font-size:14px; font-weight:600; text-align:center;
+    cursor:pointer; margin-top:4px;
+  }
+  .bk-file input{display:none;}
+  .bk-preview{
+    background:#fff; border:1px solid #e2ded3; border-radius:9px; padding:12px; margin-top:10px; font-size:13px; line-height:1.6;
+  }
+  .bk-preview .hd{font-weight:800; margin-bottom:5px; font-size:13.5px;}
+  .bk-preview .r{display:flex; justify-content:space-between; color:var(--ink-soft);}
+  .bk-preview .r b{color:var(--ink);}
+
   .hidden{display:none !important;}
   .toast{
     position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
@@ -224,6 +264,7 @@
     <button class="tab" data-tab="riwayat">Riwayat</button>
     <button class="tab" data-tab="rekap">Rekap</button>
     <button class="tab" data-tab="atur">Atur</button>
+    <button class="tab tab-backup" data-tab="backup">💾 Backup</button>
   </div>
 </div>
 
@@ -362,6 +403,76 @@
       <input type="text" id="newWorkerInput" placeholder="Nama pekerja baru" style="margin-bottom:8px;">
       <button class="btn-secondary" id="addWorkerBtn" style="margin-top:0;">+ Tambah Pekerja</button>
     </div>
+    <div class="card">
+      <div class="section-label">Backup &amp; Restore Data</div>
+      <div style="font-size:13px; color:var(--ink-soft); line-height:1.5; margin-bottom:10px;">
+        Simpan salinan data proyek supaya bisa dipindah ke HP baru.
+      </div>
+      <button class="btn-primary" data-tab="backup" id="gotoBackupBtn">💾 Buka Menu Backup &amp; Restore</button>
+    </div>
+  </div>
+
+  <!-- TAB: BACKUP -->
+  <div id="tab-backup" class="hidden">
+
+    <div id="backupWarn"></div>
+
+    <div class="card">
+      <div class="section-label">Data Tersimpan Saat Ini</div>
+      <div class="bk-stats">
+        <div class="b"><div class="n" id="bkProj">0</div><div class="l">Proyek</div></div>
+        <div class="b"><div class="n" id="bkExp">0</div><div class="l">Catatan Biaya</div></div>
+        <div class="b"><div class="n" id="bkItem">0</div><div class="l">Barang</div></div>
+        <div class="b"><div class="n" id="bkSize">0 KB</div><div class="l">Ukuran Data</div></div>
+      </div>
+      <div style="font-size:12.5px; color:var(--ink-soft); text-align:center;">
+        Backup terakhir: <b id="bkLast" style="color:var(--ink);">belum pernah</b>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">1 · Simpan Backup</div>
+      <button class="btn-green" id="bkShareBtn">📤 Simpan / Kirim File Backup</button>
+      <button class="btn-secondary" id="bkDownloadBtn">⬇️ Unduh File .json</button>
+      <button class="btn-secondary" id="bkCopyBtn">📋 Salin Teks Backup</button>
+      <div class="bk-note">
+        <b>Cara paling aman di iPhone:</b> tekan <b>Simpan / Kirim File Backup</b> →
+        pilih <b>Save to Files</b> (simpan di iCloud Drive) atau kirim ke <b>WhatsApp diri sendiri</b>.
+        Dengan begitu file backup ikut pindah otomatis saat ganti HP.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">2 · Pulihkan Data (Restore)</div>
+      <label class="bk-file">
+        📁 Pilih File Backup (.json)
+        <input type="file" id="bkFileInput" accept=".json,application/json,text/plain">
+      </label>
+      <div class="section-label" style="margin-top:16px;">Atau tempel teks backup</div>
+      <textarea class="bk-area" id="bkPasteArea" placeholder="Tempel (paste) isi teks backup di sini..."></textarea>
+      <button class="btn-secondary" id="bkPasteBtn">Baca Teks Backup</button>
+
+      <div id="bkPreviewWrap"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Zona Berbahaya</div>
+      <button class="btn-danger" id="bkResetBtn">🗑️ Hapus Semua Data Aplikasi</button>
+      <div class="bk-note">
+        Pastikan sudah punya file backup sebelum menghapus. Data yang terhapus
+        <b>tidak bisa dikembalikan</b>.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="bk-note" style="margin-top:0;">
+        <b>⚠️ Penting untuk iPhone.</b> Data aplikasi ini tersimpan di penyimpanan browser Safari,
+        bukan di server. Data bisa hilang kalau Anda menekan <b>Hapus Riwayat &amp; Data Situs</b>
+        di Settings Safari, atau kalau aplikasi tidak dibuka lebih dari ±7 hari.
+        Biasakan tekan tombol backup <b>setiap selesai proyek</b> atau minimal seminggu sekali.
+      </div>
+    </div>
+
   </div>
 
 </div>
@@ -429,7 +540,7 @@ document.querySelectorAll('.tab, .switch').forEach(btn=>{
     document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
     const tabBtn = document.querySelector(`.tab[data-tab="${target}"]`);
     if(tabBtn) tabBtn.classList.add('active');
-    ['proyek','barang','catat','riwayat','rekap','atur'].forEach(t=>{
+    ['proyek','barang','catat','riwayat','rekap','atur','backup'].forEach(t=>{
       document.getElementById('tab-'+t).classList.toggle('hidden', t!==target);
     });
     if(target==='proyek') renderProjectList();
@@ -438,6 +549,7 @@ document.querySelectorAll('.tab, .switch').forEach(btn=>{
     if(target==='riwayat') { renderFilterChips(); renderHistory(); }
     if(target==='rekap') renderRekap();
     if(target==='atur') renderAturTab();
+    if(target==='backup') renderBackupTab();
   });
 });
 
@@ -908,6 +1020,276 @@ document.getElementById('addWorkerBtn').addEventListener('click', ()=>{
   showToast('Pekerja ditambahkan');
 });
 
+// ---------- Backup & Restore ----------
+document.getElementById('gotoBackupBtn').addEventListener('click', ()=>{
+  document.querySelector('.tab[data-tab="backup"]').click();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+const BACKUP_APP_ID = 'galaxy-biaya-proyek';
+const BACKUP_VERSION = 1;
+let pendingRestore = null;
+
+function buildBackupObject(){
+  return {
+    app: BACKUP_APP_ID,
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    device: navigator.userAgent.slice(0,120),
+    counts: { projects: projects.length, expenses: expenses.length, items: items.length },
+    data: { settings, projects, expenses, items }
+  };
+}
+function backupJson(){ return JSON.stringify(buildBackupObject(), null, 2); }
+function backupFilename(){
+  const d = new Date();
+  const stamp = d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')
+              +'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');
+  return `backup-biaya-proyek-${stamp}.json`;
+}
+function markBackupDone(){
+  settings.lastBackup = new Date().toISOString();
+  saveSettings();
+  renderBackupTab();
+}
+function dataSizeKb(){
+  let bytes = 0;
+  ['settings','projects','expenses','items'].forEach(k=>{
+    const v = localStorage.getItem(k);
+    if(v) bytes += v.length;
+  });
+  return bytes;
+}
+function fmtBytes(b){
+  if(b < 1024) return b + ' B';
+  if(b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/1024/1024).toFixed(2) + ' MB';
+}
+function fmtStamp(iso){
+  if(!iso) return null;
+  const d = new Date(iso);
+  if(isNaN(d)) return null;
+  const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function daysSince(iso){
+  if(!iso) return null;
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+}
+
+// -- Simpan / kirim (paling cocok untuk iPhone) --
+document.getElementById('bkShareBtn').addEventListener('click', async ()=>{
+  if(projects.length===0 && expenses.length===0 && items.length===0){
+    showToast('Belum ada data untuk dibackup'); return;
+  }
+  const text = backupJson();
+  const fname = backupFilename();
+  try{
+    const file = new File([text], fname, {type:'application/json'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({ files:[file], title:'Backup Biaya Proyek' });
+      markBackupDone();
+      showToast('File backup dikirim');
+      return;
+    }
+  }catch(err){
+    if(err && err.name === 'AbortError') return; // user batal, jangan fallback
+  }
+  downloadBackup();
+});
+
+function downloadBackup(){
+  if(projects.length===0 && expenses.length===0 && items.length===0){
+    showToast('Belum ada data untuk dibackup'); return;
+  }
+  const blob = new Blob([backupJson()], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = backupFilename();
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+  markBackupDone();
+  showToast('File backup diunduh');
+}
+document.getElementById('bkDownloadBtn').addEventListener('click', downloadBackup);
+
+document.getElementById('bkCopyBtn').addEventListener('click', async ()=>{
+  const text = backupJson();
+  try{
+    await navigator.clipboard.writeText(text);
+    markBackupDone();
+    showToast('Teks backup disalin');
+  }catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+    let ok = false;
+    try{ ok = document.execCommand('copy'); }catch(e2){}
+    document.body.removeChild(ta);
+    if(ok){ markBackupDone(); showToast('Teks backup disalin'); }
+    else{ document.getElementById('bkPasteArea').value = text; showToast('Salin manual dari kotak teks di bawah'); }
+  }
+});
+
+// -- Baca file / teks --
+document.getElementById('bkFileInput').addEventListener('change', (ev)=>{
+  const f = ev.target.files && ev.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ parseBackupText(String(reader.result)); ev.target.value=''; };
+  reader.onerror = ()=>{ showToast('Gagal membaca file'); ev.target.value=''; };
+  reader.readAsText(f);
+});
+document.getElementById('bkPasteBtn').addEventListener('click', ()=>{
+  const t = document.getElementById('bkPasteArea').value.trim();
+  if(!t){ showToast('Kotak teks masih kosong'); return; }
+  parseBackupText(t);
+});
+
+function parseBackupText(text){
+  let obj;
+  try{ obj = JSON.parse(text); }
+  catch(e){ pendingRestore = null; renderRestorePreview('File tidak bisa dibaca. Pastikan file backup .json yang benar (tidak diedit).'); return; }
+  const d = obj && obj.data ? obj.data : obj;
+  if(!d || (!Array.isArray(d.projects) && !Array.isArray(d.expenses))){
+    pendingRestore = null;
+    renderRestorePreview('Isi file tidak dikenali sebagai backup aplikasi ini.');
+    return;
+  }
+  pendingRestore = {
+    settings: (d.settings && typeof d.settings==='object') ? d.settings : {},
+    projects: Array.isArray(d.projects) ? d.projects : [],
+    expenses: Array.isArray(d.expenses) ? d.expenses : [],
+    items: Array.isArray(d.items) ? d.items : [],
+    exportedAt: obj.exportedAt || null
+  };
+  renderRestorePreview(null);
+}
+
+function renderRestorePreview(errMsg){
+  const w = document.getElementById('bkPreviewWrap');
+  if(errMsg){
+    w.innerHTML = `<div class="alert over" style="margin-top:12px;"><div class="ic">⚠️</div><div><b>Gagal membaca backup</b>${errMsg}</div></div>`;
+    return;
+  }
+  if(!pendingRestore){ w.innerHTML=''; return; }
+  const r = pendingRestore;
+  const tgl = fmtStamp(r.exportedAt) || 'tidak diketahui';
+  w.innerHTML = `
+    <div class="bk-preview">
+      <div class="hd">✅ Backup terbaca</div>
+      <div class="r"><span>Dibuat pada</span><b>${tgl}</b></div>
+      <div class="r"><span>Proyek</span><b>${r.projects.length}</b></div>
+      <div class="r"><span>Catatan biaya</span><b>${r.expenses.length}</b></div>
+      <div class="r"><span>Barang</span><b>${r.items.length}</b></div>
+    </div>
+    <button class="btn-primary" id="bkApplyReplace">Ganti Semua Data dengan Backup Ini</button>
+    <button class="btn-secondary" id="bkApplyMerge">Gabung dengan Data yang Ada</button>
+    <button class="btn-secondary" id="bkCancelRestore" style="border:none; color:var(--ink-soft);">Batal</button>
+  `;
+  document.getElementById('bkApplyReplace').addEventListener('click', ()=>applyRestore('replace'));
+  document.getElementById('bkApplyMerge').addEventListener('click', ()=>applyRestore('merge'));
+  document.getElementById('bkCancelRestore').addEventListener('click', ()=>{
+    pendingRestore = null;
+    document.getElementById('bkPasteArea').value = '';
+    renderRestorePreview(null);
+  });
+}
+
+function mergeById(existing, incoming){
+  const seen = new Set(existing.map(x=>x && x.id));
+  const out = existing.slice();
+  let added = 0;
+  incoming.forEach(x=>{
+    if(!x || !x.id) return;
+    if(seen.has(x.id)) return;
+    seen.add(x.id); out.push(x); added++;
+  });
+  return { list: out, added };
+}
+
+function applyRestore(mode){
+  if(!pendingRestore) return;
+  const r = pendingRestore;
+
+  if(mode === 'replace'){
+    const punya = projects.length + expenses.length + items.length;
+    const pesan = punya > 0
+      ? `Semua data di HP ini (${projects.length} proyek, ${expenses.length} catatan) akan DIGANTI dengan isi backup.\n\nLanjutkan?`
+      : 'Pulihkan data dari backup ini?';
+    if(!confirm(pesan)) return;
+
+    settings = {...DEFAULT_SETTINGS, ...r.settings};
+    if(!settings.cats || settings.cats.length===0) settings.cats = DEFAULT_CATS;
+    if(!settings.workers) settings.workers = [];
+    projects = r.projects;
+    expenses = r.expenses;
+    items = r.items;
+  }else{
+    const mp = mergeById(projects, r.projects);
+    const me = mergeById(expenses, r.expenses);
+    const mi = mergeById(items, r.items);
+    projects = mp.list; expenses = me.list; items = mi.list;
+
+    // gabungkan kategori & pekerja tanpa duplikat
+    (r.settings.cats||[]).forEach(c=>{ if(!settings.cats.includes(c)) settings.cats.push(c); });
+    (r.settings.workers||[]).forEach(w=>{ if(!settings.workers.includes(w)) settings.workers.push(w); });
+    showToast(`Ditambahkan: ${mp.added} proyek, ${me.added} catatan, ${mi.added} barang`);
+  }
+
+  if(!projects.find(p=>p.id===settings.currentProjectId)){
+    settings.currentProjectId = projects.length ? projects[0].id : null;
+  }
+  if(!settings.cats.includes(selectedCat)) selectedCat = settings.cats[0];
+
+  saveSettings(); saveProjects(); saveExpenses(); saveItems();
+
+  pendingRestore = null;
+  document.getElementById('bkPasteArea').value = '';
+  renderRestorePreview(null);
+  renderHeaderProject();
+  renderProjectList();
+  renderBackupTab();
+  if(mode==='replace') showToast('Data berhasil dipulihkan');
+}
+
+// -- Reset --
+document.getElementById('bkResetBtn').addEventListener('click', ()=>{
+  if(!confirm('Hapus SEMUA data aplikasi (proyek, catatan biaya, barang)?\n\nPastikan Anda sudah menyimpan file backup.')) return;
+  if(!confirm('Konfirmasi sekali lagi — data akan hilang permanen dan tidak bisa dikembalikan.')) return;
+  ['settings','projects','expenses','items'].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+  settings = {...DEFAULT_SETTINGS, cats:[...DEFAULT_CATS], workers:[]};
+  projects = []; expenses = []; items = [];
+  selectedCat = settings.cats[0];
+  saveSettings();
+  renderHeaderProject();
+  renderProjectList();
+  renderBackupTab();
+  showToast('Semua data dihapus');
+});
+
+function renderBackupTab(){
+  document.getElementById('bkProj').textContent = projects.length;
+  document.getElementById('bkExp').textContent = expenses.length;
+  document.getElementById('bkItem').textContent = items.length;
+  document.getElementById('bkSize').textContent = fmtBytes(dataSizeKb());
+
+  const last = fmtStamp(settings.lastBackup);
+  document.getElementById('bkLast').textContent = last || 'belum pernah';
+
+  const warnEl = document.getElementById('backupWarn');
+  const punyaData = (projects.length + expenses.length + items.length) > 0;
+  const d = daysSince(settings.lastBackup);
+  warnEl.innerHTML = '';
+  if(punyaData && d === null){
+    warnEl.innerHTML = `<div class="alert over"><div class="ic">⚠️</div><div><b>Belum pernah backup</b>Data Anda hanya ada di HP ini. Simpan file backup sekarang.</div></div>`;
+  }else if(punyaData && d >= 7){
+    warnEl.innerHTML = `<div class="alert near"><div class="ic">🔔</div><div><b>Sudah ${d} hari sejak backup terakhir</b>Sebaiknya simpan backup baru.</div></div>`;
+  }
+}
+
 // ---------- Toast ----------
 function showToast(msg){
   const t = document.createElement('div');
@@ -922,6 +1304,15 @@ function showToast(msg){
   loadAll();
   renderHeaderProject();
   renderProjectList();
+
+  // pengingat backup saat aplikasi dibuka
+  const punyaData = (projects.length + expenses.length + items.length) > 0;
+  const d = daysSince(settings.lastBackup);
+  if(punyaData && (d === null || d >= 7)){
+    setTimeout(()=>{
+      showToast(d === null ? 'Data belum pernah dibackup — buka tab Backup' : `Backup terakhir ${d} hari lalu`);
+    }, 1200);
+  }
 })();
 </script>
 
