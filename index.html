@@ -17,6 +17,7 @@
     --warn:#a9700f;
     --warn-bg:#fdf3e0;
     --green:#1f7a4d;
+    --green-bg:#e7f3ec;
     --radius:10px;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -41,15 +42,13 @@
   }
   .proj-current .name{font-weight:700;}
   .proj-current .switch{font-size:11.5px; text-decoration:underline; cursor:pointer; color:#cfe0ee;}
-  .tabs{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
+  .tabs{display:flex; gap:6px; margin-top:10px; overflow-x:auto; -webkit-overflow-scrolling:touch;}
   .tab{
-    flex:1 1 auto; min-width:58px; text-align:center; padding:9px 8px; border-radius:8px;
+    flex:0 0 auto; min-width:64px; text-align:center; padding:9px 8px; border-radius:8px;
     font-size:12px; font-weight:600; background:rgba(255,255,255,.12); color:#e7eef5;
     border:none; cursor:pointer; white-space:nowrap;
   }
   .tab.active{background:#fff; color:var(--blue-deep);}
-  .tab-backup{background:rgba(255,255,255,.28); color:#fff;}
-  .tab-backup.active{background:#fff; color:var(--blue-deep);}
 
   .wrap{max-width:560px; margin:0 auto; padding:14px;}
   .card{
@@ -88,6 +87,7 @@
   }
   .alert.over{background:var(--danger-bg); color:var(--danger); border:1px solid #eeccc9;}
   .alert.near{background:var(--warn-bg); color:var(--warn); border:1px solid #f3e0b5;}
+  .alert.ok{background:var(--green-bg); color:var(--green); border:1px solid #c9e3d5;}
   .alert .ic{font-size:18px; flex-shrink:0;}
   .alert b{display:block; font-size:14px; margin-bottom:2px;}
 
@@ -99,6 +99,11 @@
   .chip.active{background:var(--blue-deep); color:#fff; border-color:var(--blue-deep);}
 
   /* Proyek list */
+  .form-title{font-size:14px; font-weight:800; margin:0 0 12px;}
+  .total-preview{
+    background:var(--accent-bg); border-radius:8px; padding:9px 11px; font-size:13px;
+    display:flex; justify-content:space-between; margin-bottom:12px; color:var(--blue-deep); font-weight:700;
+  }
   .proj-item{
     background:#fff; border:1px solid #e2ded3; border-radius:10px; padding:13px 14px; margin-bottom:10px;
     cursor:pointer;
@@ -107,21 +112,34 @@
   .proj-item .top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
   .proj-item .pname{font-weight:700; font-size:15px;}
   .proj-item .ploc{font-size:12px; color:var(--ink-soft); margin-top:1px;}
-  .proj-item .top-right{display:flex; align-items:center; gap:8px; flex-shrink:0;}
-  .proj-del{
-    background:#fdeaea; border:1px solid #eeccc9; color:var(--danger); font-size:17px; line-height:1;
+  .proj-item .top-right{display:flex; align-items:center; gap:6px; flex-shrink:0;}
+  .icon-btn{
+    background:#fff; border:1px solid #d6d1c4; color:var(--ink-soft); font-size:15px; line-height:1;
     cursor:pointer; padding:0; width:34px; height:34px; border-radius:8px;
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
+  .icon-btn.danger{background:#fdeaea; border-color:#eeccc9; color:var(--danger); font-size:17px;}
   .proj-item .status{
-    font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;
-    background:var(--accent-bg); color:var(--blue-deep); text-transform:uppercase;
+    font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:10px;
+    background:var(--accent-bg); color:var(--blue-deep); text-transform:uppercase; cursor:pointer;
   }
-  .proj-item .status.selesai{background:#e7f3ec; color:var(--green);}
-  .proj-item .budgetline{margin-top:9px;}
-  .proj-item .budgetline .nums{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft); margin-bottom:4px;}
+  .proj-item .status.selesai{background:var(--green-bg); color:var(--green);}
+
+  .bud-row{margin-top:9px;}
+  .bud-row .bl{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft); margin-bottom:4px; gap:8px;}
+  .bud-row .bl .lbl{font-weight:700; color:var(--ink);}
   .mini-bar{height:6px; border-radius:4px; background:#e5e1d4; overflow:hidden;}
   .mini-bar .fill{height:100%; border-radius:4px;}
+  .pill-lunas{
+    display:inline-block; font-size:10px; font-weight:800; padding:1px 6px; border-radius:8px;
+    background:var(--green-bg); color:var(--green); margin-left:5px; vertical-align:middle;
+  }
+  .profit-line{
+    margin-top:10px; padding-top:9px; border-top:1px dashed #e2ded3;
+    display:flex; justify-content:space-between; font-size:12.5px;
+  }
+  .profit-line .v{font-weight:800; color:var(--green);}
+  .profit-line .v.minus{color:var(--danger);}
 
   /* history */
   .day-group{margin-bottom:16px;}
@@ -140,13 +158,19 @@
     font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--blue-deep);
     background:var(--accent-bg); padding:2px 7px; border-radius:5px; display:inline-block; margin-bottom:3px;
   }
+  .jenis-tag{
+    font-size:10px; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:5px;
+    display:inline-block; margin-left:4px; letter-spacing:.3px;
+  }
+  .jenis-tag.barang{background:#eae5f7; color:#553d94;}
+  .jenis-tag.jasa{background:#fdf0e3; color:#a9700f;}
   .expense-item .desc{font-size:14px; font-weight:600;}
   .expense-item .worker{font-size:11.5px; color:var(--ink-soft); margin-top:1px;}
   .expense-item .amt{font-weight:800; font-size:14.5px;}
   .expense-item .del{background:none; border:none; color:var(--danger); font-size:19px; padding:0 0 0 10px; cursor:pointer;}
   .expense-row-inner{flex:1; display:flex; justify-content:space-between; align-items:center;}
 
-  .filter-row{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:10px;}
+  .filter-row{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:8px;}
   .filter-chip{
     white-space:nowrap; padding:6px 12px; border-radius:14px; font-size:12px; font-weight:600;
     background:#fff; border:1px solid #d6d1c4; color:var(--ink-soft); cursor:pointer; flex-shrink:0;
@@ -157,6 +181,8 @@
 
   .stat-big{text-align:center; padding:6px 0 14px;}
   .stat-big .num{font-size:26px; font-weight:800; color:var(--blue-deep);}
+  .stat-big .num.green{color:var(--green);}
+  .stat-big .num.red{color:var(--danger);}
   .stat-big .cap{font-size:12px; color:var(--ink-soft); margin-top:2px;}
   .cat-bar-row{margin-bottom:12px;}
   .cat-bar-row .top{display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;}
@@ -164,6 +190,13 @@
   .cat-bar-row .top .val{color:var(--ink-soft);}
   .cat-bar-track{height:8px; border-radius:5px; background:#e5e1d4; overflow:hidden;}
   .cat-bar-fill{height:100%; border-radius:5px; background:var(--blue);}
+
+  .kv{display:flex; justify-content:space-between; font-size:13.5px; padding:7px 0; border-bottom:1px solid #ece8dd;}
+  .kv:last-child{border-bottom:none;}
+  .kv .k{color:var(--ink-soft);}
+  .kv .v{font-weight:700;}
+  .kv .v.green{color:var(--green);}
+  .kv .v.red{color:var(--danger);}
 
   .section-label{
     font-size:11.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase;
@@ -174,17 +207,31 @@
     background:#fff; border:1px solid #d6d1c4; font-size:12.5px; margin:0 6px 6px 0;
   }
   .worker-tag button{background:none; border:none; color:var(--danger); font-size:15px; cursor:pointer; padding:0;}
+  .cat-manage-row{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:9px 0; border-bottom:1px solid #ece8dd;
+  }
+  .cat-manage-row:last-of-type{border-bottom:none;}
+  .cat-manage-row .cn{font-size:14px; font-weight:600;}
+  .mini-toggle{display:flex; gap:4px;}
+  .mini-toggle button{
+    padding:5px 10px; border-radius:12px; font-size:11.5px; font-weight:700; cursor:pointer;
+    background:#fff; border:1px solid #d6d1c4; color:var(--ink-soft);
+  }
+  .mini-toggle button.on{background:var(--blue-deep); color:#fff; border-color:var(--blue-deep);}
 
   /* Barang belanja */
-  .item-summary{display:flex; gap:8px; margin-bottom:14px;}
+  .item-summary{display:flex; gap:8px; margin-bottom:8px;}
   .item-summary .box{
     flex:1; background:var(--paper); border:1px solid #e2ded3; border-radius:10px; padding:11px 10px; text-align:center;
   }
-  .item-summary .box .n{font-size:15px; font-weight:800;}
+  .item-summary .box .n{font-size:14.5px; font-weight:800;}
   .item-summary .box .l{font-size:10px; color:var(--ink-soft); text-transform:uppercase; margin-top:2px; font-weight:700;}
   .item-summary .box.sisa .n{color:var(--danger);}
   .item-summary .box.beli .n{color:var(--green);}
-  .item-row3{display:grid; grid-template-columns:1fr 60px 70px; gap:6px;}
+  .item-summary .box.untung .n{color:var(--green);}
+  .item-summary .box.untung .n.minus{color:var(--danger);}
+  .item-row2{display:grid; grid-template-columns:1fr 1fr; gap:6px;}
   .item-list-row{
     display:flex; align-items:flex-start; gap:10px; padding:11px 2px; border-bottom:1px solid #ece8dd;
   }
@@ -194,57 +241,25 @@
     cursor:pointer; display:flex; align-items:center; justify-content:center; background:#fff; font-size:14px; color:#fff;
   }
   .item-check.checked{background:var(--green); border-color:var(--green);}
-  .item-info{flex:1;}
+  .item-info{flex:1; min-width:0;}
   .item-info .nm{font-size:14px; font-weight:600;}
   .item-info .nm.done{text-decoration:line-through; color:var(--ink-soft);}
   .item-info .meta{font-size:12px; color:var(--ink-soft); margin-top:2px;}
-  .item-info .jml{font-weight:700; font-size:13.5px; margin-top:2px;}
-  .item-del{background:none; border:none; color:var(--danger); font-size:19px; cursor:pointer; padding:0 0 0 4px;}
+  .item-info .jml{font-size:13px; margin-top:3px;}
+  .item-info .jml b{font-weight:800;}
+  .item-info .untung{font-size:12.5px; margin-top:2px; font-weight:700; color:var(--green);}
+  .item-info .untung.minus{color:var(--danger);}
+  .item-info .untung.kosong{color:var(--warn);}
+  .item-actions{display:flex; flex-direction:column; gap:4px; flex-shrink:0;}
+  .item-actions button{background:none; border:none; cursor:pointer; padding:0 0 0 4px; font-size:16px;}
+  .item-actions .item-del{color:var(--danger); font-size:19px;}
   .sub-section-title{font-size:12.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.4px; margin:14px 0 8px;}
-
-  /* Backup */
-  .bk-stats{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;}
-  .bk-stats .b{
-    background:#fff; border:1px solid #e2ded3; border-radius:9px; padding:10px; text-align:center;
-  }
-  .bk-stats .b .n{font-size:17px; font-weight:800; color:var(--blue-deep);}
-  .bk-stats .b .l{font-size:10px; color:var(--ink-soft); text-transform:uppercase; font-weight:700; margin-top:2px;}
-  .bk-note{
-    font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin-top:10px;
-    background:#f4f2ec; border-radius:8px; padding:10px 11px;
-  }
-  .bk-note b{color:var(--ink);}
-  .btn-green{
-    width:100%; padding:14px; border-radius:9px; border:none;
-    background:var(--green); color:#fff; font-size:15.5px; font-weight:700; cursor:pointer; margin-top:4px;
-  }
-  .btn-danger{
-    width:100%; padding:12px; border-radius:9px; border:1px solid #eeccc9;
-    background:var(--danger-bg); color:var(--danger); font-size:14px; font-weight:700; cursor:pointer; margin-top:8px;
-  }
-  textarea.bk-area{
-    width:100%; min-height:110px; padding:10px 11px; border:1px solid #d6d1c4; border-radius:8px;
-    font-size:12px; font-family:ui-monospace,Menlo,monospace; background:#fff; color:var(--ink);
-    resize:vertical; -webkit-user-select:text; user-select:text;
-  }
-  .bk-file{
-    display:block; width:100%; padding:12px; border-radius:9px; border:1px dashed #b9b3a3;
-    background:#fff; color:var(--blue-deep); font-size:14px; font-weight:600; text-align:center;
-    cursor:pointer; margin-top:4px;
-  }
-  .bk-file input{display:none;}
-  .bk-preview{
-    background:#fff; border:1px solid #e2ded3; border-radius:9px; padding:12px; margin-top:10px; font-size:13px; line-height:1.6;
-  }
-  .bk-preview .hd{font-weight:800; margin-bottom:5px; font-size:13.5px;}
-  .bk-preview .r{display:flex; justify-content:space-between; color:var(--ink-soft);}
-  .bk-preview .r b{color:var(--ink);}
 
   .hidden{display:none !important;}
   .toast{
     position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
     background:var(--ink); color:#fff; padding:10px 18px; border-radius:20px;
-    font-size:13px; z-index:100; box-shadow:0 3px 10px rgba(0,0,0,.25);
+    font-size:13px; z-index:100; box-shadow:0 3px 10px rgba(0,0,0,.25); max-width:88%; text-align:center;
   }
 </style>
 </head>
@@ -264,7 +279,6 @@
     <button class="tab" data-tab="riwayat">Riwayat</button>
     <button class="tab" data-tab="rekap">Rekap</button>
     <button class="tab" data-tab="atur">Atur</button>
-    <button class="tab tab-backup" data-tab="backup">💾 Backup</button>
   </div>
 </div>
 
@@ -273,6 +287,7 @@
   <!-- TAB: PROYEK -->
   <div id="tab-proyek">
     <div class="card">
+      <div class="form-title" id="projFormTitle">Proyek Baru</div>
       <div class="field">
         <label>Nama Proyek</label>
         <input type="text" id="newProjName" placeholder="Contoh: CCTV Casatuya Resort">
@@ -281,11 +296,22 @@
         <label>Lokasi</label>
         <input type="text" id="newProjLoc" placeholder="Contoh: Taro, Bali">
       </div>
-      <div class="field">
-        <label>Anggaran Proyek (Rp) — opsional</label>
-        <input type="number" id="newProjBudget" placeholder="0" min="0">
+      <div class="item-row2">
+        <div class="field">
+          <label>Anggaran Barang</label>
+          <input type="number" id="newProjBudgetBarang" placeholder="0" min="0">
+        </div>
+        <div class="field">
+          <label>Anggaran Jasa</label>
+          <input type="number" id="newProjBudgetJasa" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="total-preview">
+        <span>Total anggaran</span>
+        <span id="projTotalPreview">Rp 0</span>
       </div>
       <button class="btn-primary" id="addProjBtn">+ Buat Proyek Baru</button>
+      <button class="btn-secondary hidden" id="cancelProjEdit">Batal</button>
     </div>
     <div id="projList"></div>
   </div>
@@ -297,20 +323,33 @@
     </div>
     <div id="barangContent" class="hidden">
       <div class="item-summary">
-        <div class="box"><div class="n" id="sumTotalEstimasi">Rp 0</div><div class="l">Total Estimasi</div></div>
+        <div class="box"><div class="n" id="sumModal">Rp 0</div><div class="l">Modal Beli</div></div>
+        <div class="box"><div class="n" id="sumJual">Rp 0</div><div class="l">Harga Jual</div></div>
+        <div class="box untung"><div class="n" id="sumUntung">Rp 0</div><div class="l">Untung</div></div>
+      </div>
+      <div class="item-summary">
         <div class="box sisa"><div class="n" id="sumSisa">Rp 0</div><div class="l">Belum Dibeli</div></div>
         <div class="box beli"><div class="n" id="sumSudah">Rp 0</div><div class="l">Sudah Dibeli</div></div>
       </div>
+      <div id="barangBudgetBox"></div>
+
       <div class="card">
+        <div class="form-title" id="itemFormTitle">Tambah Barang</div>
         <div class="field">
           <label>Nama Barang</label>
           <input type="text" id="inpItemName" placeholder="Contoh: NVR Hilook 16 Channel">
         </div>
-        <div class="item-row3">
+        <div class="item-row2">
           <div class="field">
-            <label>Harga Satuan</label>
-            <input type="number" id="inpItemHarga" placeholder="0" min="0">
+            <label>Harga Beli / Satuan</label>
+            <input type="number" id="inpItemHargaBeli" placeholder="0" min="0">
           </div>
+          <div class="field">
+            <label>Harga Jual / Satuan</label>
+            <input type="number" id="inpItemHargaJual" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="item-row2">
           <div class="field">
             <label>Qty</label>
             <input type="number" id="inpItemQty" placeholder="1" min="0" value="1">
@@ -320,8 +359,14 @@
             <input type="text" id="inpItemSatuan" placeholder="unit">
           </div>
         </div>
+        <div class="total-preview">
+          <span>Untung barang ini</span>
+          <span id="itemProfitPreview">Rp 0</span>
+        </div>
         <button class="btn-primary" id="addItemBtnBarang">+ Tambah ke Daftar Barang</button>
+        <button class="btn-secondary hidden" id="cancelItemEdit">Batal</button>
       </div>
+
       <div class="card">
         <div class="sub-section-title" style="margin-top:0;">Belum Dibeli</div>
         <div id="itemListPending"></div>
@@ -347,6 +392,10 @@
           <label>Kategori</label>
           <div class="chip-row" id="catChips"></div>
         </div>
+        <div class="field">
+          <label>Masuk Anggaran</label>
+          <div class="chip-row" id="jenisChips"></div>
+        </div>
         <div class="field hidden" id="workerFieldWrap">
           <label>Nama Tukang / Pekerja</label>
           <input type="text" id="inpWorker" placeholder="Nama pekerja">
@@ -369,6 +418,7 @@
     <div class="card">
       <button class="btn-secondary" id="exportBtn" style="margin-top:0;">⬇ Download Laporan Proyek Ini (CSV)</button>
     </div>
+    <div class="filter-row" id="filterJenisRow"></div>
     <div class="filter-row" id="filterCatRow"></div>
     <div id="historyContainer"></div>
   </div>
@@ -381,6 +431,14 @@
         <div class="cap" id="rekapCap">Total pengeluaran proyek</div>
       </div>
       <div id="budgetAlertRekap"></div>
+      <div id="rekapSplit"></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Untung Barang</div>
+      <div id="rekapProfit"></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Pengeluaran per Kategori</div>
       <div id="rekapByCat"></div>
     </div>
     <div class="card">
@@ -393,7 +451,10 @@
   <div id="tab-atur" class="hidden">
     <div class="card">
       <div class="section-label">Kategori Pengeluaran</div>
-      <div class="chip-row" id="manageCatChips" style="margin-bottom:10px;"></div>
+      <p style="font-size:12.5px; color:var(--ink-soft); margin:0 0 8px; line-height:1.4;">
+        Tentukan setiap kategori masuk ke anggaran Barang atau Jasa. Ini dipakai otomatis waktu mencatat pengeluaran.
+      </p>
+      <div id="manageCatList" style="margin-bottom:10px;"></div>
       <input type="text" id="newCatInput" placeholder="Nama kategori baru" style="margin-bottom:8px;">
       <button class="btn-secondary" id="addCatBtn" style="margin-top:0;">+ Tambah Kategori</button>
     </div>
@@ -403,90 +464,28 @@
       <input type="text" id="newWorkerInput" placeholder="Nama pekerja baru" style="margin-bottom:8px;">
       <button class="btn-secondary" id="addWorkerBtn" style="margin-top:0;">+ Tambah Pekerja</button>
     </div>
-    <div class="card">
-      <div class="section-label">Backup &amp; Restore Data</div>
-      <div style="font-size:13px; color:var(--ink-soft); line-height:1.5; margin-bottom:10px;">
-        Simpan salinan data proyek supaya bisa dipindah ke HP baru.
-      </div>
-      <button class="btn-primary" data-tab="backup" id="gotoBackupBtn">💾 Buka Menu Backup &amp; Restore</button>
-    </div>
-  </div>
-
-  <!-- TAB: BACKUP -->
-  <div id="tab-backup" class="hidden">
-
-    <div id="backupWarn"></div>
-
-    <div class="card">
-      <div class="section-label">Data Tersimpan Saat Ini</div>
-      <div class="bk-stats">
-        <div class="b"><div class="n" id="bkProj">0</div><div class="l">Proyek</div></div>
-        <div class="b"><div class="n" id="bkExp">0</div><div class="l">Catatan Biaya</div></div>
-        <div class="b"><div class="n" id="bkItem">0</div><div class="l">Barang</div></div>
-        <div class="b"><div class="n" id="bkSize">0 KB</div><div class="l">Ukuran Data</div></div>
-      </div>
-      <div style="font-size:12.5px; color:var(--ink-soft); text-align:center;">
-        Backup terakhir: <b id="bkLast" style="color:var(--ink);">belum pernah</b>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-label">1 · Simpan Backup</div>
-      <button class="btn-green" id="bkShareBtn">📤 Simpan / Kirim File Backup</button>
-      <button class="btn-secondary" id="bkDownloadBtn">⬇️ Unduh File .json</button>
-      <button class="btn-secondary" id="bkCopyBtn">📋 Salin Teks Backup</button>
-      <div class="bk-note">
-        <b>Cara paling aman di iPhone:</b> tekan <b>Simpan / Kirim File Backup</b> →
-        pilih <b>Save to Files</b> (simpan di iCloud Drive) atau kirim ke <b>WhatsApp diri sendiri</b>.
-        Dengan begitu file backup ikut pindah otomatis saat ganti HP.
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-label">2 · Pulihkan Data (Restore)</div>
-      <label class="bk-file">
-        📁 Pilih File Backup (.json)
-        <input type="file" id="bkFileInput" accept=".json,application/json,text/plain">
-      </label>
-      <div class="section-label" style="margin-top:16px;">Atau tempel teks backup</div>
-      <textarea class="bk-area" id="bkPasteArea" placeholder="Tempel (paste) isi teks backup di sini..."></textarea>
-      <button class="btn-secondary" id="bkPasteBtn">Baca Teks Backup</button>
-
-      <div id="bkPreviewWrap"></div>
-    </div>
-
-    <div class="card">
-      <div class="section-label">Zona Berbahaya</div>
-      <button class="btn-danger" id="bkResetBtn">🗑️ Hapus Semua Data Aplikasi</button>
-      <div class="bk-note">
-        Pastikan sudah punya file backup sebelum menghapus. Data yang terhapus
-        <b>tidak bisa dikembalikan</b>.
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="bk-note" style="margin-top:0;">
-        <b>⚠️ Penting untuk iPhone.</b> Data aplikasi ini tersimpan di penyimpanan browser Safari,
-        bukan di server. Data bisa hilang kalau Anda menekan <b>Hapus Riwayat &amp; Data Situs</b>
-        di Settings Safari, atau kalau aplikasi tidak dibuka lebih dari ±7 hari.
-        Biasakan tekan tombol backup <b>setiap selesai proyek</b> atau minimal seminggu sekali.
-      </div>
-    </div>
-
   </div>
 
 </div>
 
 <script>
 const DEFAULT_CATS = ["Transport","Makan","Ongkos Tukang","Material","Akomodasi","Pulsa/Komunikasi","Lain-lain"];
-const DEFAULT_SETTINGS = { cats: DEFAULT_CATS, workers: [], currentProjectId: null, warnPercent: 80 };
+const DEFAULT_CAT_JENIS = {
+  "Transport":"Jasa", "Makan":"Jasa", "Ongkos Tukang":"Jasa", "Material":"Barang",
+  "Akomodasi":"Jasa", "Pulsa/Komunikasi":"Jasa", "Lain-lain":"Jasa"
+};
+const DEFAULT_SETTINGS = { cats: DEFAULT_CATS, catJenis: {}, workers: [], currentProjectId: null, warnPercent: 80 };
 
 let settings = {...DEFAULT_SETTINGS};
-let projects = []; // {id, name, loc, budget, status, createdAt}
-let expenses = [];  // {id, projectId, date, cat, worker, desc, amount, createdAt}
-let items = []; // {id, projectId, nama, harga, qty, satuan, purchased, purchasedAt}
+let projects = []; // {id,name,loc,budgetBarang,budgetJasa,budget,status,manual,createdAt}
+let expenses = []; // {id,projectId,date,cat,jenis,worker,desc,amount,createdAt}
+let items = [];    // {id,projectId,nama,harga(beli),hargaJual,qty,satuan,purchased,purchasedAt,createdAt}
 let selectedCat = DEFAULT_CATS[0];
+let selectedJenis = 'Jasa';
 let historyFilterCat = 'Semua';
+let historyFilterJenis = 'Semua';
+let editingProjectId = null;
+let editingItemId = null;
 
 function rupiah(n){ return "Rp " + Math.round(n).toLocaleString('id-ID'); }
 function todayStr(){
@@ -501,35 +500,98 @@ function fmtDateLabel(dstr){
   return `${hariNames[dt.getDay()]}, ${d} ${bulanNames[m-1]} ${y}`;
 }
 function uid(prefix){ return prefix+Date.now()+Math.floor(Math.random()*1000); }
+function numVal(id){ return parseFloat(document.getElementById(id).value) || 0; }
 
 // ---------- Storage ----------
 function lsGet(key, fallback){
   try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
 }
 function lsSet(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
-function loadAll(){
-  settings = {...DEFAULT_SETTINGS, ...lsGet('settings', {})};
-  if(!settings.cats || settings.cats.length===0) settings.cats = DEFAULT_CATS;
-  if(!settings.workers) settings.workers = [];
-  projects = lsGet('projects', []);
-  expenses = lsGet('expenses', []);
-  items = lsGet('items', []);
-  if(!settings.cats.includes(selectedCat)) selectedCat = settings.cats[0];
-}
 function saveSettings(){ lsSet('settings', settings); }
 function saveProjects(){ lsSet('projects', projects); }
 function saveExpenses(){ lsSet('expenses', expenses); }
 function saveItems(){ lsSet('items', items); }
+
+function jenisOfCat(cat){
+  return (settings.catJenis && settings.catJenis[cat]) || DEFAULT_CAT_JENIS[cat] || 'Jasa';
+}
+
+function loadAll(){
+  settings = {...DEFAULT_SETTINGS, ...lsGet('settings', {})};
+  if(!settings.cats || settings.cats.length===0) settings.cats = [...DEFAULT_CATS];
+  if(!settings.workers) settings.workers = [];
+  if(!settings.catJenis) settings.catJenis = {};
+  settings.cats.forEach(c=>{
+    if(!settings.catJenis[c]) settings.catJenis[c] = DEFAULT_CAT_JENIS[c] || 'Jasa';
+  });
+
+  projects = lsGet('projects', []);
+  expenses = lsGet('expenses', []);
+  items = lsGet('items', []);
+
+  // migrasi data lama
+  projects.forEach(p=>{
+    if(p.budgetBarang===undefined && p.budgetJasa===undefined){
+      p.budgetBarang = p.budget || 0;
+      p.budgetJasa = 0;
+    }
+    p.budgetBarang = p.budgetBarang || 0;
+    p.budgetJasa = p.budgetJasa || 0;
+    p.budget = p.budgetBarang + p.budgetJasa;
+    if(!p.status) p.status = 'Berjalan';
+    // proyek lama yang sudah ditandai Selesai jangan sampai ikut di-reset
+    if(p.manual===undefined) p.manual = (p.status==='Selesai');
+  });
+  expenses.forEach(e=>{ if(!e.jenis) e.jenis = jenisOfCat(e.cat); });
+  items.forEach(i=>{ if(i.hargaJual===undefined) i.hargaJual = 0; });
+
+  saveSettings(); saveProjects(); saveExpenses(); saveItems();
+
+  if(!settings.cats.includes(selectedCat)) selectedCat = settings.cats[0];
+  selectedJenis = jenisOfCat(selectedCat);
+
+  projects.forEach(p=>syncProjectStatus(p, false));
+}
+
+function getCurrentProject(){ return projects.find(p=>p.id===settings.currentProjectId) || null; }
+function getProjectExpenses(pid){ return expenses.filter(e=>e.projectId===pid); }
 function getProjectItems(pid){ return items.filter(i=>i.projectId===pid); }
 
-function getCurrentProject(){
-  return projects.find(p=>p.id===settings.currentProjectId) || null;
+function getSpend(pid){
+  const list = getProjectExpenses(pid);
+  const barang = list.filter(e=>e.jenis==='Barang').reduce((s,e)=>s+e.amount,0);
+  const jasa = list.filter(e=>e.jenis!=='Barang').reduce((s,e)=>s+e.amount,0);
+  return { barang, jasa, total: barang+jasa };
 }
-function getProjectExpenses(pid){
-  return expenses.filter(e=>e.projectId===pid);
+function isJasaLunas(p){
+  if(!p || !(p.budgetJasa>0)) return false;
+  return getSpend(p.id).jasa >= p.budgetJasa;
 }
-function getProjectTotal(pid){
-  return getProjectExpenses(pid).reduce((s,e)=>s+e.amount,0);
+function getProfit(pid){
+  const list = getProjectItems(pid);
+  const modal = list.reduce((s,i)=>s+(i.harga||0)*(i.qty||0),0);
+  const jual  = list.reduce((s,i)=>s+(i.hargaJual||0)*(i.qty||0),0);
+  const belumIsiJual = list.filter(i=>!(i.hargaJual>0)).length;
+  return { modal, jual, untung: jual-modal, margin: jual>0 ? ((jual-modal)/jual*100) : 0, belumIsiJual, count:list.length };
+}
+
+// ---------- Status otomatis: jasa lunas => proyek selesai ----------
+function syncProjectStatus(p, notify){
+  if(!p) return null;
+  if(p.manual) return null; // pernah diubah manual, hormati keputusan user
+  const lunas = isJasaLunas(p);
+  if(lunas && p.status!=='Selesai'){
+    p.status = 'Selesai';
+    saveProjects();
+    if(notify) showToast('Jasa sudah dibayar penuh — proyek ditandai Selesai');
+    return 'selesai';
+  }
+  if(!lunas && p.status==='Selesai'){
+    p.status = 'Berjalan';
+    saveProjects();
+    return 'berjalan';
+  }
+  return null;
 }
 
 // ---------- Tabs ----------
@@ -540,44 +602,115 @@ document.querySelectorAll('.tab, .switch').forEach(btn=>{
     document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
     const tabBtn = document.querySelector(`.tab[data-tab="${target}"]`);
     if(tabBtn) tabBtn.classList.add('active');
-    ['proyek','barang','catat','riwayat','rekap','atur','backup'].forEach(t=>{
+    ['proyek','barang','catat','riwayat','rekap','atur'].forEach(t=>{
       document.getElementById('tab-'+t).classList.toggle('hidden', t!==target);
     });
     if(target==='proyek') renderProjectList();
     if(target==='barang') renderBarangTab();
     if(target==='catat') renderCatatTab();
-    if(target==='riwayat') { renderFilterChips(); renderHistory(); }
+    if(target==='riwayat'){ renderFilterChips(); renderHistory(); }
     if(target==='rekap') renderRekap();
     if(target==='atur') renderAturTab();
-    if(target==='backup') renderBackupTab();
   });
 });
+function goTab(name){ const b = document.querySelector(`.tab[data-tab="${name}"]`); if(b) b.click(); }
 
-// ---------- Header current project ----------
+// ---------- Header ----------
 function renderHeaderProject(){
   const p = getCurrentProject();
   document.getElementById('projCurrentName').textContent = p ? p.name : 'Belum ada proyek';
 }
 
+// ---------- Blok anggaran (dipakai di list proyek & rekap) ----------
+function budgetBlockHtml(label, terpakai, anggaran, lunasBadge){
+  if(!(anggaran>0)){
+    return `<div class="bud-row">
+      <div class="bl"><span class="lbl">${label}</span><span>${rupiah(terpakai)} · tanpa anggaran</span></div>
+    </div>`;
+  }
+  const pct = Math.min(100, terpakai/anggaran*100);
+  const over = terpakai>anggaran;
+  const near = !over && pct>=(settings.warnPercent||80);
+  const color = over ? 'var(--danger)' : (near ? 'var(--warn)' : (pct>=100 ? 'var(--green)' : 'var(--blue)'));
+  return `<div class="bud-row">
+    <div class="bl">
+      <span class="lbl">${label}${lunasBadge ? '<span class="pill-lunas">Lunas</span>' : ''}</span>
+      <span>${rupiah(terpakai)} / ${rupiah(anggaran)}</span>
+    </div>
+    <div class="mini-bar"><div class="fill" style="width:${pct}%; background:${color};"></div></div>
+  </div>`;
+}
+
 // ---------- Proyek tab ----------
+['newProjBudgetBarang','newProjBudgetJasa'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateProjTotalPreview);
+});
+function updateProjTotalPreview(){
+  const tot = numVal('newProjBudgetBarang') + numVal('newProjBudgetJasa');
+  document.getElementById('projTotalPreview').textContent = rupiah(tot);
+}
+function clearProjForm(){
+  document.getElementById('newProjName').value='';
+  document.getElementById('newProjLoc').value='';
+  document.getElementById('newProjBudgetBarang').value='';
+  document.getElementById('newProjBudgetJasa').value='';
+  updateProjTotalPreview();
+}
+function setProjectFormMode(p){
+  editingProjectId = p ? p.id : null;
+  document.getElementById('projFormTitle').textContent = p ? 'Edit Proyek' : 'Proyek Baru';
+  document.getElementById('addProjBtn').textContent = p ? 'Simpan Perubahan' : '+ Buat Proyek Baru';
+  document.getElementById('cancelProjEdit').classList.toggle('hidden', !p);
+  if(p){
+    document.getElementById('newProjName').value = p.name;
+    document.getElementById('newProjLoc').value = p.loc || '';
+    document.getElementById('newProjBudgetBarang').value = p.budgetBarang || '';
+    document.getElementById('newProjBudgetJasa').value = p.budgetJasa || '';
+    updateProjTotalPreview();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }else{
+    clearProjForm();
+  }
+}
+document.getElementById('cancelProjEdit').addEventListener('click', ()=>setProjectFormMode(null));
+
 document.getElementById('addProjBtn').addEventListener('click', ()=>{
   const name = document.getElementById('newProjName').value.trim();
   const loc = document.getElementById('newProjLoc').value.trim();
-  const budget = parseFloat(document.getElementById('newProjBudget').value) || 0;
+  const bBarang = numVal('newProjBudgetBarang');
+  const bJasa = numVal('newProjBudgetJasa');
   if(!name){ showToast('Isi nama proyek dulu'); return; }
-  const proj = { id: uid('p'), name, loc, budget, status:'Berjalan', createdAt: new Date().toISOString() };
+
+  if(editingProjectId){
+    const p = projects.find(x=>x.id===editingProjectId);
+    if(!p){ setProjectFormMode(null); return; }
+    p.name = name; p.loc = loc;
+    p.budgetBarang = bBarang; p.budgetJasa = bJasa;
+    p.budget = bBarang + bJasa;
+    p.manual = false; // anggaran berubah, biar status ikut hitungan lagi
+    saveProjects();
+    syncProjectStatus(p, true);
+    setProjectFormMode(null);
+    renderProjectList();
+    renderHeaderProject();
+    showToast('Perubahan tersimpan');
+    return;
+  }
+
+  const proj = {
+    id: uid('p'), name, loc,
+    budgetBarang: bBarang, budgetJasa: bJasa, budget: bBarang+bJasa,
+    status:'Berjalan', manual:false, createdAt: new Date().toISOString()
+  };
   projects.push(proj);
   saveProjects();
   settings.currentProjectId = proj.id;
   saveSettings();
-  document.getElementById('newProjName').value='';
-  document.getElementById('newProjLoc').value='';
-  document.getElementById('newProjBudget').value='';
+  clearProjForm();
   renderProjectList();
   renderHeaderProject();
   showToast('Proyek dibuat & dipilih');
-  // arahkan ke tab Barang supaya bisa langsung isi daftar barang yang perlu dibeli
-  document.querySelector('.tab[data-tab="barang"]').click();
+  goTab('barang');
 });
 
 function renderProjectList(){
@@ -588,9 +721,9 @@ function renderProjectList(){
   }
   el.innerHTML = '';
   [...projects].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')).forEach(p=>{
-    const total = getProjectTotal(p.id);
-    const pct = p.budget>0 ? Math.min(100, (total/p.budget)*100) : 0;
-    const over = p.budget>0 && total>p.budget;
+    const spend = getSpend(p.id);
+    const profit = getProfit(p.id);
+    const lunas = isJasaLunas(p);
     const div = document.createElement('div');
     div.className = 'proj-item' + (p.id===settings.currentProjectId ? ' selected' : '');
     div.innerHTML = `
@@ -599,21 +732,18 @@ function renderProjectList(){
           <div class="pname">${p.name}</div>
           <div class="ploc">${p.loc || '—'}</div>
         </div>
-        <span class="status ${p.status==='Selesai' ? 'selesai' : ''}" data-toggle-status="${p.id}">${p.status}</span>
         <div class="top-right">
-          <button class="proj-del" data-delproj="${p.id}" title="Hapus proyek">🗑</button>
+          <span class="status ${p.status==='Selesai' ? 'selesai' : ''}" data-toggle-status="${p.id}">${p.status}</span>
+          <button class="icon-btn" data-editproj="${p.id}" title="Edit proyek">✎</button>
+          <button class="icon-btn danger" data-delproj="${p.id}" title="Hapus proyek">🗑</button>
         </div>
       </div>
-      <div class="budgetline">
-        <div class="nums">
-          <span>${rupiah(total)} terpakai</span>
-          <span>${p.budget>0 ? 'Anggaran '+rupiah(p.budget) : 'Tanpa anggaran'}</span>
-        </div>
-        ${p.budget>0 ? `<div class="mini-bar"><div class="fill" style="width:${pct}%; background:${over ? 'var(--danger)' : (pct>=(settings.warnPercent||80) ? 'var(--warn)' : 'var(--blue)')};"></div></div>` : ''}
-      </div>
+      ${budgetBlockHtml('Barang', spend.barang, p.budgetBarang, false)}
+      ${budgetBlockHtml('Jasa', spend.jasa, p.budgetJasa, lunas)}
+      ${profit.jual>0 ? `<div class="profit-line"><span>Untung barang</span><span class="v ${profit.untung<0?'minus':''}">${rupiah(profit.untung)}</span></div>` : ''}
     `;
     div.addEventListener('click', (e)=>{
-      if(e.target.closest('[data-toggle-status],[data-delproj]')) return;
+      if(e.target.closest('[data-toggle-status],[data-delproj],[data-editproj]')) return;
       settings.currentProjectId = p.id;
       saveSettings();
       renderProjectList();
@@ -622,13 +752,23 @@ function renderProjectList(){
     });
     el.appendChild(div);
   });
+
   el.querySelectorAll('[data-toggle-status]').forEach(s=>{
     s.addEventListener('click', (e)=>{
       e.stopPropagation();
       const proj = projects.find(x=>x.id===s.dataset.toggleStatus);
       proj.status = proj.status==='Selesai' ? 'Berjalan' : 'Selesai';
+      proj.manual = true;
       saveProjects();
       renderProjectList();
+      showToast('Status diubah manual jadi '+proj.status);
+    });
+  });
+  el.querySelectorAll('[data-editproj]').forEach(s=>{
+    s.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const proj = projects.find(x=>x.id===s.dataset.editproj);
+      setProjectFormMode(proj);
     });
   });
   el.querySelectorAll('[data-delproj]').forEach(s=>{
@@ -644,6 +784,7 @@ function renderProjectList(){
         settings.currentProjectId = projects.length>0 ? projects[0].id : null;
         saveSettings();
       }
+      if(editingProjectId===proj.id) setProjectFormMode(null);
       renderProjectList();
       renderHeaderProject();
       showToast('Proyek dihapus');
@@ -652,46 +793,114 @@ function renderProjectList(){
 }
 
 // ---------- Barang tab ----------
+['inpItemHargaBeli','inpItemHargaJual','inpItemQty'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateItemProfitPreview);
+});
+function updateItemProfitPreview(){
+  const qty = numVal('inpItemQty') || 0;
+  const untung = (numVal('inpItemHargaJual') - numVal('inpItemHargaBeli')) * qty;
+  const el = document.getElementById('itemProfitPreview');
+  el.textContent = rupiah(untung);
+  el.style.color = untung<0 ? 'var(--danger)' : (untung>0 ? 'var(--green)' : 'var(--blue-deep)');
+}
+function clearItemForm(){
+  document.getElementById('inpItemName').value = '';
+  document.getElementById('inpItemHargaBeli').value = '';
+  document.getElementById('inpItemHargaJual').value = '';
+  document.getElementById('inpItemQty').value = '1';
+  document.getElementById('inpItemSatuan').value = '';
+  updateItemProfitPreview();
+}
+function setItemFormMode(it){
+  editingItemId = it ? it.id : null;
+  document.getElementById('itemFormTitle').textContent = it ? 'Edit Barang' : 'Tambah Barang';
+  document.getElementById('addItemBtnBarang').textContent = it ? 'Simpan Perubahan' : '+ Tambah ke Daftar Barang';
+  document.getElementById('cancelItemEdit').classList.toggle('hidden', !it);
+  if(it){
+    document.getElementById('inpItemName').value = it.nama;
+    document.getElementById('inpItemHargaBeli').value = it.harga || '';
+    document.getElementById('inpItemHargaJual').value = it.hargaJual || '';
+    document.getElementById('inpItemQty').value = it.qty;
+    document.getElementById('inpItemSatuan').value = it.satuan || '';
+    updateItemProfitPreview();
+    document.getElementById('inpItemName').scrollIntoView({behavior:'smooth', block:'center'});
+  }else{
+    clearItemForm();
+  }
+}
+document.getElementById('cancelItemEdit').addEventListener('click', ()=>setItemFormMode(null));
+
 function renderBarangTab(){
   const p = getCurrentProject();
   document.getElementById('noProjCardBarang').classList.toggle('hidden', !!p);
   document.getElementById('barangContent').classList.toggle('hidden', !p);
   if(p) renderItemLists();
 }
+
 document.getElementById('addItemBtnBarang').addEventListener('click', ()=>{
   const p = getCurrentProject();
   if(!p){ showToast('Pilih proyek dulu'); return; }
   const nama = document.getElementById('inpItemName').value.trim();
-  const harga = parseFloat(document.getElementById('inpItemHarga').value) || 0;
-  const qty = parseFloat(document.getElementById('inpItemQty').value) || 1;
+  const harga = numVal('inpItemHargaBeli');
+  const hargaJual = numVal('inpItemHargaJual');
+  const qty = numVal('inpItemQty') || 1;
   const satuan = document.getElementById('inpItemSatuan').value.trim() || 'unit';
   if(!nama){ showToast('Isi nama barang dulu'); return; }
-  if(harga<=0){ showToast('Isi harga satuan'); return; }
+  if(harga<=0){ showToast('Isi harga beli'); return; }
+
+  if(editingItemId){
+    const it = items.find(i=>i.id===editingItemId);
+    if(it){
+      it.nama = nama; it.harga = harga; it.hargaJual = hargaJual; it.qty = qty; it.satuan = satuan;
+      saveItems();
+      showToast('Barang diperbarui');
+    }
+    setItemFormMode(null);
+    renderItemLists();
+    return;
+  }
 
   items.push({
-    id: uid('it'), projectId: p.id, nama, harga, qty, satuan,
+    id: uid('it'), projectId: p.id, nama, harga, hargaJual, qty, satuan,
     purchased:false, purchasedAt:null, createdAt: new Date().toISOString()
   });
   saveItems();
-  document.getElementById('inpItemName').value = '';
-  document.getElementById('inpItemHarga').value = '';
-  document.getElementById('inpItemQty').value = '1';
-  document.getElementById('inpItemSatuan').value = '';
+  clearItemForm();
   renderItemLists();
   showToast('Barang ditambahkan ke daftar');
 });
+
 function renderItemLists(){
   const p = getCurrentProject();
   const list = getProjectItems(p.id);
   const pending = list.filter(i=>!i.purchased).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||''));
   const done = list.filter(i=>i.purchased).sort((a,b)=>(b.purchasedAt||'').localeCompare(a.purchasedAt||''));
 
-  const totalEstimasi = list.reduce((s,i)=>s+i.harga*i.qty,0);
-  const totalSisa = pending.reduce((s,i)=>s+i.harga*i.qty,0);
-  const totalSudah = done.reduce((s,i)=>s+i.harga*i.qty,0);
-  document.getElementById('sumTotalEstimasi').textContent = rupiah(totalEstimasi);
-  document.getElementById('sumSisa').textContent = rupiah(totalSisa);
-  document.getElementById('sumSudah').textContent = rupiah(totalSudah);
+  const prof = getProfit(p.id);
+  document.getElementById('sumModal').textContent = rupiah(prof.modal);
+  document.getElementById('sumJual').textContent = rupiah(prof.jual);
+  const untungEl = document.getElementById('sumUntung');
+  untungEl.textContent = rupiah(prof.untung);
+  untungEl.classList.toggle('minus', prof.untung<0);
+
+  document.getElementById('sumSisa').textContent = rupiah(pending.reduce((s,i)=>s+i.harga*i.qty,0));
+  document.getElementById('sumSudah').textContent = rupiah(done.reduce((s,i)=>s+i.harga*i.qty,0));
+
+  // info anggaran barang + peringatan harga jual kosong
+  const box = document.getElementById('barangBudgetBox');
+  let html = '';
+  if(p.budgetBarang>0){
+    const sisaAnggaran = p.budgetBarang - prof.modal;
+    if(prof.modal > p.budgetBarang){
+      html += `<div class="alert over"><div class="ic">⚠️</div><div><b>Modal barang lewat anggaran</b>Total beli ${rupiah(prof.modal)}, anggaran barang ${rupiah(p.budgetBarang)} (lebih ${rupiah(-sisaAnggaran)}).</div></div>`;
+    }else{
+      html += `<div class="alert ok"><div class="ic">📦</div><div><b>Sisa anggaran barang ${rupiah(sisaAnggaran)}</b>Total beli ${rupiah(prof.modal)} dari anggaran ${rupiah(p.budgetBarang)}.</div></div>`;
+    }
+  }
+  if(prof.belumIsiJual>0 && prof.count>0){
+    html += `<div class="alert near"><div class="ic">🏷️</div><div><b>${prof.belumIsiJual} barang belum ada harga jual</b>Isi harga jualnya lewat tombol ✎ supaya untungnya kehitung.</div></div>`;
+  }
+  box.innerHTML = html;
 
   const pendingEl = document.getElementById('itemListPending');
   pendingEl.innerHTML = pending.length===0
@@ -706,28 +915,50 @@ function renderItemLists(){
   document.querySelectorAll('[data-check]').forEach(b=>{
     b.addEventListener('click', ()=>toggleItemPurchased(b.dataset.check));
   });
+  document.querySelectorAll('[data-edititem]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const it = items.find(i=>i.id===b.dataset.edititem);
+      if(it) setItemFormMode(it);
+    });
+  });
   document.querySelectorAll('[data-delitem]').forEach(b=>{
     b.addEventListener('click', ()=>{
       if(!confirm('Hapus barang ini dari daftar?')) return;
       items = items.filter(i=>i.id!==b.dataset.delitem);
       saveItems();
+      if(editingItemId===b.dataset.delitem) setItemFormMode(null);
       renderItemLists();
     });
   });
 }
+
 function itemRowHtml(i){
-  const jumlah = i.harga * i.qty;
+  const modal = (i.harga||0) * (i.qty||0);
+  const jual = (i.hargaJual||0) * (i.qty||0);
+  const untung = jual - modal;
+  const margin = jual>0 ? Math.round(untung/jual*100) : 0;
+  let untungHtml;
+  if(!(i.hargaJual>0)){
+    untungHtml = `<div class="untung kosong">Harga jual belum diisi</div>`;
+  }else{
+    untungHtml = `<div class="untung ${untung<0?'minus':''}">Untung ${rupiah(untung)} · ${margin}%</div>`;
+  }
   return `
     <div class="item-list-row">
       <div class="item-check ${i.purchased?'checked':''}" data-check="${i.id}">${i.purchased?'✓':''}</div>
       <div class="item-info">
         <div class="nm ${i.purchased?'done':''}">${i.nama}</div>
-        <div class="meta">${i.qty} ${i.satuan} × ${rupiah(i.harga)}</div>
-        <div class="jml">${rupiah(jumlah)}</div>
+        <div class="meta">${i.qty} ${i.satuan} · beli ${rupiah(i.harga)} → jual ${i.hargaJual>0 ? rupiah(i.hargaJual) : '—'}</div>
+        <div class="jml">Modal <b>${rupiah(modal)}</b> · Jual <b>${i.hargaJual>0 ? rupiah(jual) : '—'}</b></div>
+        ${untungHtml}
       </div>
-      <button class="item-del" data-delitem="${i.id}">×</button>
+      <div class="item-actions">
+        <button data-edititem="${i.id}" title="Edit barang">✎</button>
+        <button class="item-del" data-delitem="${i.id}" title="Hapus">×</button>
+      </div>
     </div>`;
 }
+
 function toggleItemPurchased(id){
   const item = items.find(i=>i.id===id);
   if(!item) return;
@@ -736,15 +967,16 @@ function toggleItemPurchased(id){
     item.purchasedAt = new Date().toISOString();
     saveItems();
     renderItemLists();
-    const jumlah = item.harga * item.qty;
-    if(confirm(`Tandai "${item.nama}" sudah dibeli.\n\nCatat juga sebagai pengeluaran kategori Material sebesar ${rupiah(jumlah)}?`)){
+    const modal = item.harga * item.qty;
+    if(confirm(`Tandai "${item.nama}" sudah dibeli.\n\nCatat juga sebagai pengeluaran Barang (kategori Material) sebesar ${rupiah(modal)}?`)){
       const p = getCurrentProject();
       expenses.push({
-        id: uid('e'), projectId: p.id, date: todayStr(), cat: 'Material',
-        worker:'', desc: item.nama, amount: jumlah, createdAt: new Date().toISOString()
+        id: uid('e'), projectId: p.id, date: todayStr(), cat: 'Material', jenis: 'Barang',
+        worker:'', desc: item.nama, amount: modal, createdAt: new Date().toISOString()
       });
       saveExpenses();
-      showToast('Dicatat sebagai pengeluaran');
+      renderItemLists();
+      showToast('Dicatat sebagai pengeluaran barang');
     }
   }else{
     item.purchased = false;
@@ -765,24 +997,47 @@ function renderCatChips(){
     chip.textContent = cat;
     chip.addEventListener('click', ()=>{
       selectedCat = cat;
+      selectedJenis = jenisOfCat(cat);
       renderCatChips();
+      renderJenisChips();
       document.getElementById('workerFieldWrap').classList.toggle('hidden', cat!=='Ongkos Tukang');
     });
     c.appendChild(chip);
   });
   document.getElementById('workerFieldWrap').classList.toggle('hidden', selectedCat!=='Ongkos Tukang');
 }
+function renderJenisChips(){
+  const c = document.getElementById('jenisChips');
+  c.innerHTML = '';
+  ['Barang','Jasa'].forEach(j=>{
+    const chip = document.createElement('button');
+    chip.type='button';
+    chip.className = 'chip' + (j===selectedJenis ? ' active' : '');
+    chip.textContent = 'Anggaran '+j;
+    chip.addEventListener('click', ()=>{ selectedJenis = j; renderJenisChips(); });
+    c.appendChild(chip);
+  });
+}
 function renderCatatAlert(){
   const box = document.getElementById('catatAlertBox');
   const p = getCurrentProject();
   box.innerHTML = '';
-  if(!p || !p.budget || p.budget<=0) return;
-  const total = getProjectTotal(p.id);
-  if(total > p.budget){
-    box.innerHTML = `<div class="alert over"><div class="ic">⚠️</div><div><b>Anggaran proyek "${p.name}" sudah terlampaui!</b>Terpakai ${rupiah(total)} dari anggaran ${rupiah(p.budget)}.</div></div>`;
-  }else if(total >= p.budget*((settings.warnPercent||80)/100)){
-    box.innerHTML = `<div class="alert near"><div class="ic">🔔</div><div><b>Anggaran hampir habis</b>Sisa anggaran: ${rupiah(p.budget-total)}.</div></div>`;
+  if(!p) return;
+  const s = getSpend(p.id);
+  let html = '';
+  const warn = (settings.warnPercent||80)/100;
+
+  if(p.budgetJasa>0){
+    if(s.jasa >= p.budgetJasa){
+      html += `<div class="alert ok"><div class="ic">✅</div><div><b>Jasa sudah dibayar penuh</b>${rupiah(s.jasa)} dari ${rupiah(p.budgetJasa)} — proyek "${p.name}" ditandai Selesai.</div></div>`;
+    }else if(s.jasa >= p.budgetJasa*warn){
+      html += `<div class="alert near"><div class="ic">🔔</div><div><b>Jasa hampir lunas</b>Kurang ${rupiah(p.budgetJasa-s.jasa)} lagi untuk menutup anggaran jasa.</div></div>`;
+    }
   }
+  if(p.budgetBarang>0 && s.barang > p.budgetBarang){
+    html += `<div class="alert over"><div class="ic">⚠️</div><div><b>Anggaran barang terlampaui</b>Lebih ${rupiah(s.barang-p.budgetBarang)} dari ${rupiah(p.budgetBarang)}.</div></div>`;
+  }
+  box.innerHTML = html;
 }
 function renderCatatTab(){
   const p = getCurrentProject();
@@ -791,6 +1046,7 @@ function renderCatatTab(){
   if(p){
     document.getElementById('inpDate').value = todayStr();
     renderCatChips();
+    renderJenisChips();
     renderCatatAlert();
   }
 }
@@ -800,13 +1056,13 @@ document.getElementById('addExpBtn').addEventListener('click', ()=>{
   const date = document.getElementById('inpDate').value || todayStr();
   const worker = selectedCat==='Ongkos Tukang' ? document.getElementById('inpWorker').value.trim() : '';
   const desc = document.getElementById('inpDesc').value.trim();
-  const amount = parseFloat(document.getElementById('inpAmount').value) || 0;
+  const amount = numVal('inpAmount');
   if(!desc){ showToast('Isi keterangan dulu'); return; }
   if(amount<=0){ showToast('Isi jumlah pengeluaran'); return; }
 
   expenses.push({
-    id: uid('e'), projectId: p.id, date, cat: selectedCat, worker, desc, amount,
-    createdAt: new Date().toISOString()
+    id: uid('e'), projectId: p.id, date, cat: selectedCat, jenis: selectedJenis,
+    worker, desc, amount, createdAt: new Date().toISOString()
   });
   saveExpenses();
   if(worker && !settings.workers.includes(worker)){
@@ -816,16 +1072,28 @@ document.getElementById('addExpBtn').addEventListener('click', ()=>{
   document.getElementById('inpDesc').value = '';
   document.getElementById('inpAmount').value = '';
   document.getElementById('inpWorker').value = '';
+
+  const changed = syncProjectStatus(p, true);
   renderCatatAlert();
-  showToast('Pengeluaran tersimpan');
+  renderHeaderProject();
+  if(!changed) showToast('Pengeluaran tersimpan');
 });
 
 // ---------- Riwayat tab ----------
 function renderFilterChips(){
+  const jr = document.getElementById('filterJenisRow');
+  jr.innerHTML = '';
+  ['Semua','Barang','Jasa'].forEach(j=>{
+    const chip = document.createElement('button');
+    chip.className = 'filter-chip' + (j===historyFilterJenis ? ' active' : '');
+    chip.textContent = j==='Semua' ? 'Semua Jenis' : j;
+    chip.addEventListener('click', ()=>{ historyFilterJenis = j; renderFilterChips(); renderHistory(); });
+    jr.appendChild(chip);
+  });
+
   const el = document.getElementById('filterCatRow');
-  const cats = ['Semua', ...settings.cats];
   el.innerHTML = '';
-  cats.forEach(c=>{
+  ['Semua', ...settings.cats].forEach(c=>{
     const chip = document.createElement('button');
     chip.className = 'filter-chip' + (c===historyFilterCat ? ' active' : '');
     chip.textContent = c;
@@ -839,8 +1107,9 @@ function renderHistory(){
   if(!p){ el.innerHTML = '<div class="card"><div class="empty">Pilih proyek dulu di tab "Proyek".</div></div>'; return; }
   let list = getProjectExpenses(p.id);
   if(historyFilterCat!=='Semua') list = list.filter(e=>e.cat===historyFilterCat);
+  if(historyFilterJenis!=='Semua') list = list.filter(e=>(e.jenis||'Jasa')===historyFilterJenis);
   if(list.length===0){
-    el.innerHTML = '<div class="card"><div class="empty">Belum ada catatan untuk proyek ini.</div></div>';
+    el.innerHTML = '<div class="card"><div class="empty">Belum ada catatan untuk filter ini.</div></div>';
     return;
   }
   const byDate = {};
@@ -848,17 +1117,18 @@ function renderHistory(){
   const dates = Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
   el.innerHTML = '';
   dates.forEach(d=>{
-    const items = byDate[d].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
-    const total = items.reduce((s,e)=>s+e.amount,0);
+    const rows = byDate[d].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+    const total = rows.reduce((s,e)=>s+e.amount,0);
     const group = document.createElement('div');
     group.className = 'card day-group';
     let html = `<div class="day-header"><span>${fmtDateLabel(d)}</span><span class="tot">${rupiah(total)}</span></div>`;
-    items.forEach(e=>{
+    rows.forEach(e=>{
+      const j = e.jenis || 'Jasa';
       html += `
         <div class="expense-item">
           <div class="expense-row-inner">
             <div>
-              <span class="cat">${e.cat}</span>
+              <span class="cat">${e.cat}</span><span class="jenis-tag ${j==='Barang'?'barang':'jasa'}">${j}</span>
               <div class="desc">${e.desc}</div>
               ${e.worker ? `<div class="worker">Pekerja: ${e.worker}</div>` : ''}
             </div>
@@ -875,20 +1145,43 @@ function renderHistory(){
       if(!confirm('Hapus catatan ini?')) return;
       expenses = expenses.filter(e=>e.id!==b.dataset.del);
       saveExpenses();
+      syncProjectStatus(getCurrentProject(), false);
       renderHistory();
       showToast('Dihapus');
     });
   });
 }
+
 document.getElementById('exportBtn').addEventListener('click', ()=>{
   const p = getCurrentProject();
   if(!p){ showToast('Pilih proyek dulu'); return; }
   const list = getProjectExpenses(p.id);
-  if(list.length===0){ showToast('Belum ada data untuk diexport'); return; }
-  let csv = 'Proyek,Tanggal,Kategori,Pekerja,Keterangan,Jumlah\n';
+  const itemList = getProjectItems(p.id);
+  if(list.length===0 && itemList.length===0){ showToast('Belum ada data untuk diexport'); return; }
+
+  let csv = 'PENGELUARAN\n';
+  csv += 'Proyek,Tanggal,Jenis,Kategori,Pekerja,Keterangan,Jumlah\n';
   [...list].sort((a,b)=>a.date.localeCompare(b.date)).forEach(e=>{
-    csv += [`"${p.name}"`, e.date, `"${e.cat}"`, `"${e.worker||''}"`, `"${e.desc.replace(/"/g,'""')}"`, e.amount].join(',') + '\n';
+    csv += [`"${p.name}"`, e.date, `"${e.jenis||'Jasa'}"`, `"${e.cat}"`, `"${e.worker||''}"`, `"${e.desc.replace(/"/g,'""')}"`, e.amount].join(',') + '\n';
   });
+
+  csv += '\nDAFTAR BARANG\n';
+  csv += 'Nama,Qty,Satuan,Harga Beli,Harga Jual,Total Beli,Total Jual,Untung,Status\n';
+  itemList.forEach(i=>{
+    const modal = i.harga*i.qty, jual = (i.hargaJual||0)*i.qty;
+    csv += [`"${i.nama.replace(/"/g,'""')}"`, i.qty, `"${i.satuan}"`, i.harga, i.hargaJual||0, modal, jual, jual-modal, i.purchased?'Sudah dibeli':'Belum dibeli'].join(',') + '\n';
+  });
+
+  const s = getSpend(p.id), prof = getProfit(p.id);
+  csv += '\nRINGKASAN\n';
+  csv += `Anggaran Barang,${p.budgetBarang}\n`;
+  csv += `Terpakai Barang,${s.barang}\n`;
+  csv += `Anggaran Jasa,${p.budgetJasa}\n`;
+  csv += `Terpakai Jasa,${s.jasa}\n`;
+  csv += `Status Jasa,${isJasaLunas(p)?'Lunas':'Belum lunas'}\n`;
+  csv += `Untung Barang,${prof.untung}\n`;
+  csv += `Status Proyek,${p.status}\n`;
+
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -907,28 +1200,48 @@ function renderRekap(){
   const totalEl = document.getElementById('rekapTotal');
   const capEl = document.getElementById('rekapCap');
   const alertEl = document.getElementById('budgetAlertRekap');
+  const splitEl = document.getElementById('rekapSplit');
+  const profitEl = document.getElementById('rekapProfit');
   const catEl = document.getElementById('rekapByCat');
   const workerEl = document.getElementById('rekapByWorker');
+
   if(!p){
     totalEl.textContent = 'Rp 0';
     capEl.textContent = 'Pilih proyek dulu';
-    alertEl.innerHTML = '';
-    catEl.innerHTML = '';
+    alertEl.innerHTML = ''; splitEl.innerHTML = ''; catEl.innerHTML = '';
+    profitEl.innerHTML = '<div class="empty">Belum ada data.</div>';
     workerEl.innerHTML = '<div class="empty">Belum ada data.</div>';
     return;
   }
+
   const list = getProjectExpenses(p.id);
-  const total = list.reduce((s,e)=>s+e.amount,0);
-  totalEl.textContent = rupiah(total);
+  const s = getSpend(p.id);
+  totalEl.textContent = rupiah(s.total);
   capEl.textContent = `Total pengeluaran — ${p.name}`;
 
-  alertEl.innerHTML = '';
-  if(p.budget>0){
-    if(total>p.budget){
-      alertEl.innerHTML = `<div class="alert over"><div class="ic">⚠️</div><div><b>Melebihi anggaran</b>Lebih ${rupiah(total-p.budget)} dari anggaran ${rupiah(p.budget)}.</div></div>`;
-    }else if(total >= p.budget*((settings.warnPercent||80)/100)){
-      alertEl.innerHTML = `<div class="alert near"><div class="ic">🔔</div><div><b>Mendekati anggaran</b>Sisa ${rupiah(p.budget-total)} dari ${rupiah(p.budget)}.</div></div>`;
-    }
+  const lunas = isJasaLunas(p);
+  alertEl.innerHTML = lunas
+    ? `<div class="alert ok"><div class="ic">✅</div><div><b>Jasa lunas — proyek selesai</b>Anggaran jasa ${rupiah(p.budgetJasa)} sudah dibayar penuh.</div></div>`
+    : (p.budgetJasa>0
+        ? `<div class="alert near"><div class="ic">🔔</div><div><b>Jasa belum lunas</b>Sisa ${rupiah(p.budgetJasa - s.jasa)} lagi.</div></div>`
+        : '');
+
+  splitEl.innerHTML =
+    budgetBlockHtml('Barang', s.barang, p.budgetBarang, false) +
+    budgetBlockHtml('Jasa', s.jasa, p.budgetJasa, lunas) +
+    `<div class="profit-line"><span>Total anggaran</span><span class="v" style="color:var(--blue-deep)">${rupiah(p.budget||0)}</span></div>`;
+
+  const prof = getProfit(p.id);
+  if(prof.count===0){
+    profitEl.innerHTML = '<div class="empty">Belum ada barang di daftar.</div>';
+  }else{
+    profitEl.innerHTML = `
+      <div class="kv"><span class="k">Total harga beli (modal)</span><span class="v">${rupiah(prof.modal)}</span></div>
+      <div class="kv"><span class="k">Total harga jual</span><span class="v">${rupiah(prof.jual)}</span></div>
+      <div class="kv"><span class="k">Untung barang</span><span class="v ${prof.untung<0?'red':'green'}">${rupiah(prof.untung)}</span></div>
+      <div class="kv"><span class="k">Margin</span><span class="v ${prof.untung<0?'red':'green'}">${Math.round(prof.margin)}%</span></div>
+      ${prof.belumIsiJual>0 ? `<div class="kv"><span class="k">Belum diisi harga jual</span><span class="v" style="color:var(--warn)">${prof.belumIsiJual} barang</span></div>` : ''}
+    `;
   }
 
   const byCat = {};
@@ -952,13 +1265,9 @@ function renderRekap(){
     byWorker[e.worker] = (byWorker[e.worker]||0)+e.amount;
   });
   const workerEntries = Object.entries(byWorker).sort((a,b)=>b[1]-a[1]);
-  if(workerEntries.length===0){
-    workerEl.innerHTML = '<div class="empty">Belum ada ongkos tukang tercatat.</div>';
-  }else{
-    workerEl.innerHTML = workerEntries.map(([w,val])=>`
-      <div class="expense-item"><div class="desc">${w}</div><div class="amt">${rupiah(val)}</div></div>
-    `).join('');
-  }
+  workerEl.innerHTML = workerEntries.length===0
+    ? '<div class="empty">Belum ada ongkos tukang tercatat.</div>'
+    : workerEntries.map(([w,val])=>`<div class="expense-item"><div class="desc">${w}</div><div class="amt">${rupiah(val)}</div></div>`).join('');
 }
 
 // ---------- Atur tab ----------
@@ -967,21 +1276,40 @@ function renderAturTab(){
   renderWorkerTags();
 }
 function renderManageCats(){
-  const c = document.getElementById('manageCatChips');
-  c.innerHTML = '';
-  settings.cats.forEach(cat=>{
-    const chip = document.createElement('button');
-    chip.type='button';
-    chip.className = 'chip';
-    chip.innerHTML = cat + ' &times;';
-    chip.addEventListener('click', ()=>{
+  const c = document.getElementById('manageCatList');
+  c.innerHTML = settings.cats.map(cat=>`
+    <div class="cat-manage-row">
+      <div class="cn">${cat}</div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div class="mini-toggle">
+          <button data-setjenis="${cat}" data-j="Barang" class="${jenisOfCat(cat)==='Barang'?'on':''}">Barang</button>
+          <button data-setjenis="${cat}" data-j="Jasa" class="${jenisOfCat(cat)==='Jasa'?'on':''}">Jasa</button>
+        </div>
+        <button class="icon-btn danger" data-delcat="${cat}" style="width:30px;height:30px;font-size:15px;">×</button>
+      </div>
+    </div>
+  `).join('');
+
+  c.querySelectorAll('[data-setjenis]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      settings.catJenis[b.dataset.setjenis] = b.dataset.j;
+      saveSettings();
+      if(selectedCat===b.dataset.setjenis) selectedJenis = b.dataset.j;
+      renderManageCats();
+      showToast(`"${b.dataset.setjenis}" masuk anggaran ${b.dataset.j}`);
+    });
+  });
+  c.querySelectorAll('[data-delcat]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const cat = b.dataset.delcat;
       if(settings.cats.length<=1){ showToast('Minimal harus ada 1 kategori'); return; }
       if(!confirm(`Hapus kategori "${cat}"?`)) return;
       settings.cats = settings.cats.filter(x=>x!==cat);
+      delete settings.catJenis[cat];
+      if(selectedCat===cat){ selectedCat = settings.cats[0]; selectedJenis = jenisOfCat(selectedCat); }
       saveSettings();
       renderManageCats();
     });
-    c.appendChild(chip);
   });
 }
 document.getElementById('addCatBtn').addEventListener('click', ()=>{
@@ -989,10 +1317,11 @@ document.getElementById('addCatBtn').addEventListener('click', ()=>{
   if(!val){ showToast('Isi nama kategori'); return; }
   if(settings.cats.includes(val)){ showToast('Kategori sudah ada'); return; }
   settings.cats.push(val);
+  settings.catJenis[val] = 'Jasa';
   saveSettings();
   document.getElementById('newCatInput').value = '';
   renderManageCats();
-  showToast('Kategori ditambahkan');
+  showToast('Kategori ditambahkan (default: Jasa)');
 });
 function renderWorkerTags(){
   const c = document.getElementById('workerTagsWrap');
@@ -1020,283 +1349,13 @@ document.getElementById('addWorkerBtn').addEventListener('click', ()=>{
   showToast('Pekerja ditambahkan');
 });
 
-// ---------- Backup & Restore ----------
-document.getElementById('gotoBackupBtn').addEventListener('click', ()=>{
-  document.querySelector('.tab[data-tab="backup"]').click();
-  window.scrollTo({top:0, behavior:'smooth'});
-});
-
-const BACKUP_APP_ID = 'galaxy-biaya-proyek';
-const BACKUP_VERSION = 1;
-let pendingRestore = null;
-
-function buildBackupObject(){
-  return {
-    app: BACKUP_APP_ID,
-    version: BACKUP_VERSION,
-    exportedAt: new Date().toISOString(),
-    device: navigator.userAgent.slice(0,120),
-    counts: { projects: projects.length, expenses: expenses.length, items: items.length },
-    data: { settings, projects, expenses, items }
-  };
-}
-function backupJson(){ return JSON.stringify(buildBackupObject(), null, 2); }
-function backupFilename(){
-  const d = new Date();
-  const stamp = d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')
-              +'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');
-  return `backup-biaya-proyek-${stamp}.json`;
-}
-function markBackupDone(){
-  settings.lastBackup = new Date().toISOString();
-  saveSettings();
-  renderBackupTab();
-}
-function dataSizeKb(){
-  let bytes = 0;
-  ['settings','projects','expenses','items'].forEach(k=>{
-    const v = localStorage.getItem(k);
-    if(v) bytes += v.length;
-  });
-  return bytes;
-}
-function fmtBytes(b){
-  if(b < 1024) return b + ' B';
-  if(b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
-  return (b/1024/1024).toFixed(2) + ' MB';
-}
-function fmtStamp(iso){
-  if(!iso) return null;
-  const d = new Date(iso);
-  if(isNaN(d)) return null;
-  const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
-function daysSince(iso){
-  if(!iso) return null;
-  return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
-}
-
-// -- Simpan / kirim (paling cocok untuk iPhone) --
-document.getElementById('bkShareBtn').addEventListener('click', async ()=>{
-  if(projects.length===0 && expenses.length===0 && items.length===0){
-    showToast('Belum ada data untuk dibackup'); return;
-  }
-  const text = backupJson();
-  const fname = backupFilename();
-  try{
-    const file = new File([text], fname, {type:'application/json'});
-    if(navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({ files:[file], title:'Backup Biaya Proyek' });
-      markBackupDone();
-      showToast('File backup dikirim');
-      return;
-    }
-  }catch(err){
-    if(err && err.name === 'AbortError') return; // user batal, jangan fallback
-  }
-  downloadBackup();
-});
-
-function downloadBackup(){
-  if(projects.length===0 && expenses.length===0 && items.length===0){
-    showToast('Belum ada data untuk dibackup'); return;
-  }
-  const blob = new Blob([backupJson()], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = backupFilename();
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url), 4000);
-  markBackupDone();
-  showToast('File backup diunduh');
-}
-document.getElementById('bkDownloadBtn').addEventListener('click', downloadBackup);
-
-document.getElementById('bkCopyBtn').addEventListener('click', async ()=>{
-  const text = backupJson();
-  try{
-    await navigator.clipboard.writeText(text);
-    markBackupDone();
-    showToast('Teks backup disalin');
-  }catch(e){
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
-    document.body.appendChild(ta);
-    ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
-    let ok = false;
-    try{ ok = document.execCommand('copy'); }catch(e2){}
-    document.body.removeChild(ta);
-    if(ok){ markBackupDone(); showToast('Teks backup disalin'); }
-    else{ document.getElementById('bkPasteArea').value = text; showToast('Salin manual dari kotak teks di bawah'); }
-  }
-});
-
-// -- Baca file / teks --
-document.getElementById('bkFileInput').addEventListener('change', (ev)=>{
-  const f = ev.target.files && ev.target.files[0];
-  if(!f) return;
-  const reader = new FileReader();
-  reader.onload = ()=>{ parseBackupText(String(reader.result)); ev.target.value=''; };
-  reader.onerror = ()=>{ showToast('Gagal membaca file'); ev.target.value=''; };
-  reader.readAsText(f);
-});
-document.getElementById('bkPasteBtn').addEventListener('click', ()=>{
-  const t = document.getElementById('bkPasteArea').value.trim();
-  if(!t){ showToast('Kotak teks masih kosong'); return; }
-  parseBackupText(t);
-});
-
-function parseBackupText(text){
-  let obj;
-  try{ obj = JSON.parse(text); }
-  catch(e){ pendingRestore = null; renderRestorePreview('File tidak bisa dibaca. Pastikan file backup .json yang benar (tidak diedit).'); return; }
-  const d = obj && obj.data ? obj.data : obj;
-  if(!d || (!Array.isArray(d.projects) && !Array.isArray(d.expenses))){
-    pendingRestore = null;
-    renderRestorePreview('Isi file tidak dikenali sebagai backup aplikasi ini.');
-    return;
-  }
-  pendingRestore = {
-    settings: (d.settings && typeof d.settings==='object') ? d.settings : {},
-    projects: Array.isArray(d.projects) ? d.projects : [],
-    expenses: Array.isArray(d.expenses) ? d.expenses : [],
-    items: Array.isArray(d.items) ? d.items : [],
-    exportedAt: obj.exportedAt || null
-  };
-  renderRestorePreview(null);
-}
-
-function renderRestorePreview(errMsg){
-  const w = document.getElementById('bkPreviewWrap');
-  if(errMsg){
-    w.innerHTML = `<div class="alert over" style="margin-top:12px;"><div class="ic">⚠️</div><div><b>Gagal membaca backup</b>${errMsg}</div></div>`;
-    return;
-  }
-  if(!pendingRestore){ w.innerHTML=''; return; }
-  const r = pendingRestore;
-  const tgl = fmtStamp(r.exportedAt) || 'tidak diketahui';
-  w.innerHTML = `
-    <div class="bk-preview">
-      <div class="hd">✅ Backup terbaca</div>
-      <div class="r"><span>Dibuat pada</span><b>${tgl}</b></div>
-      <div class="r"><span>Proyek</span><b>${r.projects.length}</b></div>
-      <div class="r"><span>Catatan biaya</span><b>${r.expenses.length}</b></div>
-      <div class="r"><span>Barang</span><b>${r.items.length}</b></div>
-    </div>
-    <button class="btn-primary" id="bkApplyReplace">Ganti Semua Data dengan Backup Ini</button>
-    <button class="btn-secondary" id="bkApplyMerge">Gabung dengan Data yang Ada</button>
-    <button class="btn-secondary" id="bkCancelRestore" style="border:none; color:var(--ink-soft);">Batal</button>
-  `;
-  document.getElementById('bkApplyReplace').addEventListener('click', ()=>applyRestore('replace'));
-  document.getElementById('bkApplyMerge').addEventListener('click', ()=>applyRestore('merge'));
-  document.getElementById('bkCancelRestore').addEventListener('click', ()=>{
-    pendingRestore = null;
-    document.getElementById('bkPasteArea').value = '';
-    renderRestorePreview(null);
-  });
-}
-
-function mergeById(existing, incoming){
-  const seen = new Set(existing.map(x=>x && x.id));
-  const out = existing.slice();
-  let added = 0;
-  incoming.forEach(x=>{
-    if(!x || !x.id) return;
-    if(seen.has(x.id)) return;
-    seen.add(x.id); out.push(x); added++;
-  });
-  return { list: out, added };
-}
-
-function applyRestore(mode){
-  if(!pendingRestore) return;
-  const r = pendingRestore;
-
-  if(mode === 'replace'){
-    const punya = projects.length + expenses.length + items.length;
-    const pesan = punya > 0
-      ? `Semua data di HP ini (${projects.length} proyek, ${expenses.length} catatan) akan DIGANTI dengan isi backup.\n\nLanjutkan?`
-      : 'Pulihkan data dari backup ini?';
-    if(!confirm(pesan)) return;
-
-    settings = {...DEFAULT_SETTINGS, ...r.settings};
-    if(!settings.cats || settings.cats.length===0) settings.cats = DEFAULT_CATS;
-    if(!settings.workers) settings.workers = [];
-    projects = r.projects;
-    expenses = r.expenses;
-    items = r.items;
-  }else{
-    const mp = mergeById(projects, r.projects);
-    const me = mergeById(expenses, r.expenses);
-    const mi = mergeById(items, r.items);
-    projects = mp.list; expenses = me.list; items = mi.list;
-
-    // gabungkan kategori & pekerja tanpa duplikat
-    (r.settings.cats||[]).forEach(c=>{ if(!settings.cats.includes(c)) settings.cats.push(c); });
-    (r.settings.workers||[]).forEach(w=>{ if(!settings.workers.includes(w)) settings.workers.push(w); });
-    showToast(`Ditambahkan: ${mp.added} proyek, ${me.added} catatan, ${mi.added} barang`);
-  }
-
-  if(!projects.find(p=>p.id===settings.currentProjectId)){
-    settings.currentProjectId = projects.length ? projects[0].id : null;
-  }
-  if(!settings.cats.includes(selectedCat)) selectedCat = settings.cats[0];
-
-  saveSettings(); saveProjects(); saveExpenses(); saveItems();
-
-  pendingRestore = null;
-  document.getElementById('bkPasteArea').value = '';
-  renderRestorePreview(null);
-  renderHeaderProject();
-  renderProjectList();
-  renderBackupTab();
-  if(mode==='replace') showToast('Data berhasil dipulihkan');
-}
-
-// -- Reset --
-document.getElementById('bkResetBtn').addEventListener('click', ()=>{
-  if(!confirm('Hapus SEMUA data aplikasi (proyek, catatan biaya, barang)?\n\nPastikan Anda sudah menyimpan file backup.')) return;
-  if(!confirm('Konfirmasi sekali lagi — data akan hilang permanen dan tidak bisa dikembalikan.')) return;
-  ['settings','projects','expenses','items'].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
-  settings = {...DEFAULT_SETTINGS, cats:[...DEFAULT_CATS], workers:[]};
-  projects = []; expenses = []; items = [];
-  selectedCat = settings.cats[0];
-  saveSettings();
-  renderHeaderProject();
-  renderProjectList();
-  renderBackupTab();
-  showToast('Semua data dihapus');
-});
-
-function renderBackupTab(){
-  document.getElementById('bkProj').textContent = projects.length;
-  document.getElementById('bkExp').textContent = expenses.length;
-  document.getElementById('bkItem').textContent = items.length;
-  document.getElementById('bkSize').textContent = fmtBytes(dataSizeKb());
-
-  const last = fmtStamp(settings.lastBackup);
-  document.getElementById('bkLast').textContent = last || 'belum pernah';
-
-  const warnEl = document.getElementById('backupWarn');
-  const punyaData = (projects.length + expenses.length + items.length) > 0;
-  const d = daysSince(settings.lastBackup);
-  warnEl.innerHTML = '';
-  if(punyaData && d === null){
-    warnEl.innerHTML = `<div class="alert over"><div class="ic">⚠️</div><div><b>Belum pernah backup</b>Data Anda hanya ada di HP ini. Simpan file backup sekarang.</div></div>`;
-  }else if(punyaData && d >= 7){
-    warnEl.innerHTML = `<div class="alert near"><div class="ic">🔔</div><div><b>Sudah ${d} hari sejak backup terakhir</b>Sebaiknya simpan backup baru.</div></div>`;
-  }
-}
-
 // ---------- Toast ----------
 function showToast(msg){
   const t = document.createElement('div');
   t.className = 'toast';
   t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(), 2200);
+  setTimeout(()=>t.remove(), 2400);
 }
 
 // ---------- Init ----------
@@ -1304,15 +1363,8 @@ function showToast(msg){
   loadAll();
   renderHeaderProject();
   renderProjectList();
-
-  // pengingat backup saat aplikasi dibuka
-  const punyaData = (projects.length + expenses.length + items.length) > 0;
-  const d = daysSince(settings.lastBackup);
-  if(punyaData && (d === null || d >= 7)){
-    setTimeout(()=>{
-      showToast(d === null ? 'Data belum pernah dibackup — buka tab Backup' : `Backup terakhir ${d} hari lalu`);
-    }, 1200);
-  }
+  updateProjTotalPreview();
+  updateItemProfitPreview();
 })();
 </script>
 
